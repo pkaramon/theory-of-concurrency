@@ -1,0 +1,598 @@
+% Created 2024-10-20 Sun 16:32
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\selectlanguage{polish}
+\usepackage{caption}
+\usepackage{booktabs}
+\captionsetup{labelfont=bf}
+\usepackage{float}
+\author{Piotr Karamon}
+\date{21.10.2024r.}
+\title{Laboratorium 2 - Teoria współbieżności}
+\hypersetup{
+ pdfauthor={Piotr Karamon},
+ pdftitle={Laboratorium 2 - Teoria współbieżności},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.2 (Org mode 9.7.11)}, 
+ pdflang={Polish}}
+
+% Setup for code blocks [1/2]
+
+\usepackage{fvextra}
+
+\fvset{%
+  commandchars=\\\{\},
+  highlightcolor=white!95!black!80!blue,
+  breaklines=true,
+  breaksymbol=\color{white!60!black}\tiny\ensuremath{\hookrightarrow}}
+
+% Make line numbers smaller and grey.
+\renewcommand\theFancyVerbLine{\footnotesize\color{black!40!white}\arabic{FancyVerbLine}}
+
+\usepackage{xcolor}
+
+% In case engrave-faces-latex-gen-preamble has not been run.
+\providecolor{EfD}{HTML}{f7f7f7}
+\providecolor{EFD}{HTML}{28292e}
+
+% Define a Code environment to prettily wrap the fontified code.
+\usepackage[breakable,xparse]{tcolorbox}
+\DeclareTColorBox[]{Code}{o}%
+{colback=EfD!98!EFD, colframe=EfD!95!EFD,
+  fontupper=\footnotesize\setlength{\fboxsep}{0pt},
+  colupper=EFD,
+  IfNoValueTF={#1}%
+  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
+    boxrule=0.5pt, left=2pt}%
+  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
+    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
+  right=2pt, top=1pt, bottom=0.5pt,
+  breakable}
+
+% Support listings with captions
+\usepackage{float}
+\floatstyle{plain}
+\newfloat{listing}{htbp}{lst}
+\newcommand{\listingsname}{Listing}
+\floatname{listing}{\listingsname}
+\newcommand{\listoflistingsname}{List of Listings}
+\providecommand{\listoflistings}{\listof{listing}{\listoflistingsname}}
+
+
+% Setup for code blocks [2/2]: syntax highlighting colors
+
+\newcommand\efstrut{\vrule height 2.1ex depth 0.8ex width 0pt}
+\definecolor{EFD}{HTML}{000000}
+\definecolor{EfD}{HTML}{ffffff}
+\newcommand{\EFD}[1]{\textcolor{EFD}{#1}} % default
+\newcommand{\EFvp}[1]{#1} % variable-pitch
+\definecolor{EFh}{HTML}{595959}
+\newcommand{\EFh}[1]{\textcolor{EFh}{#1}} % shadow
+\definecolor{EFsc}{HTML}{005f5f}
+\newcommand{\EFsc}[1]{\textcolor{EFsc}{\textbf{#1}}} % success
+\definecolor{EFw}{HTML}{884900}
+\newcommand{\EFw}[1]{\textcolor{EFw}{\textbf{#1}}} % warning
+\definecolor{EFe}{HTML}{a60000}
+\newcommand{\EFe}[1]{\textcolor{EFe}{\textbf{#1}}} % error
+\definecolor{EFl}{HTML}{3548cf}
+\newcommand{\EFl}[1]{\textcolor{EFl}{#1}} % link
+\definecolor{EFlv}{HTML}{721045}
+\newcommand{\EFlv}[1]{\textcolor{EFlv}{#1}} % link-visited
+\definecolor{Efhi}{HTML}{b2e4dc}
+\newcommand{\EFhi}[1]{\colorbox{Efhi}{\efstrut{}#1}} % highlight
+\definecolor{EFc}{HTML}{595959}
+\newcommand{\EFc}[1]{\textcolor{EFc}{\textit{#1}}} % font-lock-comment-face
+\definecolor{EFcd}{HTML}{595959}
+\newcommand{\EFcd}[1]{\textcolor{EFcd}{\textit{#1}}} % font-lock-comment-delimiter-face
+\definecolor{EFs}{HTML}{3548cf}
+\newcommand{\EFs}[1]{\textcolor{EFs}{#1}} % font-lock-string-face
+\definecolor{EFd}{HTML}{2a5045}
+\newcommand{\EFd}[1]{\textcolor{EFd}{\textit{#1}}} % font-lock-doc-face
+\definecolor{EFm}{HTML}{7c318f}
+\newcommand{\EFm}[1]{\textcolor{EFm}{\textit{#1}}} % font-lock-doc-markup-face
+\definecolor{EFk}{HTML}{531ab6}
+\newcommand{\EFk}[1]{\textcolor{EFk}{#1}} % font-lock-keyword-face
+\definecolor{EFb}{HTML}{8f0075}
+\newcommand{\EFb}[1]{\textcolor{EFb}{#1}} % font-lock-builtin-face
+\definecolor{EFf}{HTML}{721045}
+\newcommand{\EFf}[1]{\textcolor{EFf}{#1}} % font-lock-function-name-face
+\definecolor{EFv}{HTML}{005e8b}
+\newcommand{\EFv}[1]{\textcolor{EFv}{#1}} % font-lock-variable-name-face
+\definecolor{EFt}{HTML}{005f5f}
+\newcommand{\EFt}[1]{\textcolor{EFt}{#1}} % font-lock-type-face
+\definecolor{EFo}{HTML}{0000b0}
+\newcommand{\EFo}[1]{\textcolor{EFo}{#1}} % font-lock-constant-face
+\definecolor{EFwr}{HTML}{884900}
+\newcommand{\EFwr}[1]{\textcolor{EFwr}{#1}} % font-lock-warning-face
+\definecolor{EFnc}{HTML}{a60000}
+\newcommand{\EFnc}[1]{\textcolor{EFnc}{\textbf{#1}}} % font-lock-negation-char-face
+\definecolor{EFpp}{HTML}{a0132f}
+\newcommand{\EFpp}[1]{\textcolor{EFpp}{#1}} % font-lock-preprocessor-face
+\definecolor{EFrc}{HTML}{00663f}
+\newcommand{\EFrc}[1]{\textcolor{EFrc}{#1}} % font-lock-regexp-grouping-construct
+\definecolor{EFrb}{HTML}{721045}
+\newcommand{\EFrb}[1]{\textcolor{EFrb}{#1}} % font-lock-regexp-grouping-backslash
+\definecolor{Efob}{HTML}{f2f2f2}
+\newcommand{\EFob}[1]{\colorbox{Efob}{\efstrut{}#1}} % org-block
+\definecolor{EFobb}{HTML}{595959}
+\definecolor{Efobb}{HTML}{f2f2f2}
+\newcommand{\EFobb}[1]{\colorbox{Efobb}{\efstrut{}\textcolor{EFobb}{#1}}} % org-block-begin-line
+\definecolor{EFobe}{HTML}{595959}
+\definecolor{Efobe}{HTML}{f2f2f2}
+\newcommand{\EFobe}[1]{\colorbox{Efobe}{\efstrut{}\textcolor{EFobe}{#1}}} % org-block-end-line
+\newcommand{\EFOa}[1]{\textbf{#1}} % outline-1
+\definecolor{EFOb}{HTML}{624416}
+\newcommand{\EFOb}[1]{\textcolor{EFOb}{\textbf{#1}}} % outline-2
+\definecolor{EFOc}{HTML}{193668}
+\newcommand{\EFOc}[1]{\textcolor{EFOc}{\textbf{#1}}} % outline-3
+\definecolor{EFOd}{HTML}{721045}
+\newcommand{\EFOd}[1]{\textcolor{EFOd}{\textbf{#1}}} % outline-4
+\definecolor{EFOe}{HTML}{2a5045}
+\newcommand{\EFOe}[1]{\textcolor{EFOe}{\textbf{#1}}} % outline-5
+\definecolor{EFOf}{HTML}{7f0000}
+\newcommand{\EFOf}[1]{\textcolor{EFOf}{\textbf{#1}}} % outline-6
+\definecolor{EFOg}{HTML}{3f578f}
+\newcommand{\EFOg}[1]{\textcolor{EFOg}{\textbf{#1}}} % outline-7
+\definecolor{EFOh}{HTML}{595959}
+\newcommand{\EFOh}[1]{\textcolor{EFOh}{\textbf{#1}}} % outline-8
+\definecolor{EFhn}{HTML}{0000b0}
+\newcommand{\EFhn}[1]{\textcolor{EFhn}{#1}} % highlight-numbers-number
+\definecolor{EFhq}{HTML}{531ab6}
+\newcommand{\EFhq}[1]{\textcolor{EFhq}{#1}} % highlight-quoted-quote
+\definecolor{EFhs}{HTML}{0000b0}
+\newcommand{\EFhs}[1]{\textcolor{EFhs}{#1}} % highlight-quoted-symbol
+\newcommand{\EFrda}[1]{#1} % rainbow-delimiters-depth-1-face
+\definecolor{EFrdb}{HTML}{dd22dd}
+\newcommand{\EFrdb}[1]{\textcolor{EFrdb}{#1}} % rainbow-delimiters-depth-2-face
+\definecolor{EFrdc}{HTML}{008899}
+\newcommand{\EFrdc}[1]{\textcolor{EFrdc}{#1}} % rainbow-delimiters-depth-3-face
+\definecolor{EFrdd}{HTML}{972500}
+\newcommand{\EFrdd}[1]{\textcolor{EFrdd}{#1}} % rainbow-delimiters-depth-4-face
+\definecolor{EFrde}{HTML}{808000}
+\newcommand{\EFrde}[1]{\textcolor{EFrde}{#1}} % rainbow-delimiters-depth-5-face
+\definecolor{EFrdf}{HTML}{531ab6}
+\newcommand{\EFrdf}[1]{\textcolor{EFrdf}{#1}} % rainbow-delimiters-depth-6-face
+\definecolor{EFrdg}{HTML}{008900}
+\newcommand{\EFrdg}[1]{\textcolor{EFrdg}{#1}} % rainbow-delimiters-depth-7-face
+\definecolor{EFrdh}{HTML}{3548cf}
+\newcommand{\EFrdh}[1]{\textcolor{EFrdh}{#1}} % rainbow-delimiters-depth-8-face
+\definecolor{EFrdi}{HTML}{8f0075}
+\newcommand{\EFrdi}[1]{\textcolor{EFrdi}{#1}} % rainbow-delimiters-depth-9-face
+\definecolor{EFany}{HTML}{6f5500}
+\definecolor{Efany}{HTML}{6f5500}
+\newcommand{\EFany}[1]{\colorbox{Efany}{\efstrut{}\textcolor{EFany}{#1}}} % ansi-color-yellow
+\definecolor{EFanr}{HTML}{a60000}
+\definecolor{Efanr}{HTML}{a60000}
+\newcommand{\EFanr}[1]{\colorbox{Efanr}{\efstrut{}\textcolor{EFanr}{#1}}} % ansi-color-red
+\definecolor{EFanb}{HTML}{000000}
+\definecolor{Efanb}{HTML}{000000}
+\newcommand{\EFanb}[1]{\colorbox{Efanb}{\efstrut{}\textcolor{EFanb}{#1}}} % ansi-color-black
+\definecolor{EFang}{HTML}{006800}
+\definecolor{Efang}{HTML}{006800}
+\newcommand{\EFang}[1]{\colorbox{Efang}{\efstrut{}\textcolor{EFang}{#1}}} % ansi-color-green
+\definecolor{EFanB}{HTML}{0031a9}
+\definecolor{EfanB}{HTML}{0031a9}
+\newcommand{\EFanB}[1]{\colorbox{EfanB}{\efstrut{}\textcolor{EFanB}{#1}}} % ansi-color-blue
+\definecolor{EFanc}{HTML}{005e8b}
+\definecolor{Efanc}{HTML}{005e8b}
+\newcommand{\EFanc}[1]{\colorbox{Efanc}{\efstrut{}\textcolor{EFanc}{#1}}} % ansi-color-cyan
+\definecolor{EFanw}{HTML}{a6a6a6}
+\definecolor{Efanw}{HTML}{a6a6a6}
+\newcommand{\EFanw}[1]{\colorbox{Efanw}{\efstrut{}\textcolor{EFanw}{#1}}} % ansi-color-white
+\definecolor{EFanm}{HTML}{721045}
+\definecolor{Efanm}{HTML}{721045}
+\newcommand{\EFanm}[1]{\colorbox{Efanm}{\efstrut{}\textcolor{EFanm}{#1}}} % ansi-color-magenta
+\definecolor{EFANy}{HTML}{884900}
+\definecolor{EfANy}{HTML}{884900}
+\newcommand{\EFANy}[1]{\colorbox{EfANy}{\efstrut{}\textcolor{EFANy}{#1}}} % ansi-color-bright-yellow
+\definecolor{EFANr}{HTML}{972500}
+\definecolor{EfANr}{HTML}{972500}
+\newcommand{\EFANr}[1]{\colorbox{EfANr}{\efstrut{}\textcolor{EFANr}{#1}}} % ansi-color-bright-red
+\definecolor{EFANb}{HTML}{595959}
+\definecolor{EfANb}{HTML}{595959}
+\newcommand{\EFANb}[1]{\colorbox{EfANb}{\efstrut{}\textcolor{EFANb}{#1}}} % ansi-color-bright-black
+\definecolor{EFANg}{HTML}{00663f}
+\definecolor{EfANg}{HTML}{00663f}
+\newcommand{\EFANg}[1]{\colorbox{EfANg}{\efstrut{}\textcolor{EFANg}{#1}}} % ansi-color-bright-green
+\definecolor{EFANB}{HTML}{3548cf}
+\definecolor{EfANB}{HTML}{3548cf}
+\newcommand{\EFANB}[1]{\colorbox{EfANB}{\efstrut{}\textcolor{EFANB}{#1}}} % ansi-color-bright-blue
+\definecolor{EFANc}{HTML}{005f5f}
+\definecolor{EfANc}{HTML}{005f5f}
+\newcommand{\EFANc}[1]{\colorbox{EfANc}{\efstrut{}\textcolor{EFANc}{#1}}} % ansi-color-bright-cyan
+\definecolor{EFANw}{HTML}{ffffff}
+\definecolor{EfANw}{HTML}{ffffff}
+\newcommand{\EFANw}[1]{\colorbox{EfANw}{\efstrut{}\textcolor{EFANw}{#1}}} % ansi-color-bright-white
+\definecolor{EFANm}{HTML}{531ab6}
+\definecolor{EfANm}{HTML}{531ab6}
+\newcommand{\EFANm}[1]{\colorbox{EfANm}{\efstrut{}\textcolor{EFANm}{#1}}} % ansi-color-bright-magenta
+\begin{document}
+
+\maketitle
+\section*{Treści zadań}
+\label{sec:org43b7359}
+\subsection*{Zadanie 1}
+\label{sec:org17a8b03}
+Zaimplementować semafor binarny za pomocą metod wait i notify, użyć go do
+synchronizacji programu Wyścig.
+\subsection*{Zadanie 2}
+\label{sec:orgd99b04c}
+Pokazać, ze do implementacji semafora za pomocą metod wait i \texttt{notify} nie
+wystarczy instrukcja \texttt{if} tylko potrzeba użyć \texttt{while}. Wyjaśnić teoretycznie
+dlaczego i potwierdzić eksperymentem w praktyce.(wskazówka: rozważyć dwie
+kolejki: czekająca na wejście do monitora obiektu oraz kolejkę związana z
+instrukcją \texttt{wait}, rozważyć kto kiedy jest budzony i kiedy następuje wyścig).
+\subsection*{Zadanie 3}
+\label{sec:orgcf31ab0}
+Zaimplementować semafor licznikowy (ogólny) za pomocą semaforów binarnych. Czy
+semafor binarny jest szczególnym przypadkiem semafora ogólnego?
+\section*{Zadanie 1}
+\label{sec:orgecd68bf}
+
+Implementujemy dwie metody semafora binarnego:
+
+\begin{itemize}
+\item \texttt{P()}: próbuje uzyskać dostęp do zasobu. Jeśli
+zasób jest zajęty (\texttt{isAvailable} jest \texttt{false}), wątek zwiększa licznik \texttt{waiting} i
+czeka (\texttt{wait()}). Gdy zasób staje się dostępny, wątek zmniejsza licznik \texttt{waiting}
+i ustawia \texttt{isAvailable} na \texttt{false}.
+\item \texttt{V()}: zwalnia zasób. Ustawia \texttt{isAvailable} na \texttt{true}
+i powiadamia (\texttt{notify()}) jeden z oczekujących wątków, jeśli taki istnieje
+(\texttt{waiting > 0}).
+\end{itemize}
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{BinarySemaphore} \EFrda{\{}
+    \EFk{private} \EFt{boolean} \EFv{isAvailable} = \EFo{true};
+    \EFk{private} \EFt{int} \EFv{waiting} = \EFhn{0};
+
+    \EFk{public} BinarySemaphore\EFrdb{(}\EFrdb{)} \EFrdb{\{}\EFrdb{\}}
+
+    \EFk{public} \EFk{synchronized} \EFt{void} \EFf{P}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{while} \EFrdc{(}\EFnc{!}isAvailable\EFrdc{)} \EFrdc{\{}
+            waiting++;
+            \EFk{try} \EFrdd{\{}
+                wait\EFrda{(}\EFrda{)};
+            \EFrdd{\}} \EFk{catch} \EFrdd{(}InterruptedException e\EFrdd{)} \EFrdd{\{}
+                e.printStackTrace\EFrda{(}\EFrda{)};
+            \EFrdd{\}}
+            waiting--;
+        \EFrdc{\}}
+        isAvailable = \EFo{false};
+
+    \EFrdb{\}}
+
+    \EFk{public} \EFk{synchronized} \EFt{void} \EFf{V}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        isAvailable = \EFo{true};
+        \EFk{if} \EFrdc{(}waiting > \EFhn{0}\EFrdc{)} \EFrdc{\{}
+            notify\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Aby zsynchronizować program Wyścig, do klasy każdego wątku podajemy semafora przez
+konstruktor, następnie w metodzie \texttt{run()} oba wątki, używają semafora w celu
+synchronizacji.
+
+Klasa \texttt{IThread}:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{IThread} \EFk{extends} \EFt{Thread} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{Counter} \EFv{\_cnt};
+    \EFk{private} \EFk{final} \EFt{BinarySemaphore} \EFv{\_sem};
+
+    \EFk{public} IThread\EFrdb{(}\EFt{Counter} \EFv{c}, BinarySemaphore s\EFrdb{)} \EFrdb{\{}
+        \_cnt = c;
+        \_sem = s;
+    \EFrdb{\}}
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{int} \EFv{i} = \EFhn{0}; i < \EFhn{100000000}; ++i\EFrdc{)} \EFrdc{\{}
+            \EFo{\_sem}.P\EFrdd{(}\EFrdd{)};
+            \_cnt.inc\EFrdd{(}\EFrdd{)};
+            \EFo{\_sem}.V\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+
+Klasa \texttt{DThread}:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{DThread} \EFk{extends} \EFt{Thread} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{Counter} \EFv{\_cnt};
+    \EFk{private} \EFk{final} \EFt{BinarySemaphore} \EFv{\_sem};
+
+    \EFk{public} DThread\EFrdb{(}\EFt{Counter} \EFv{c}, BinarySemaphore s\EFrdb{)} \EFrdb{\{}
+        \_cnt = c;
+        \_sem = s;
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{int} \EFv{i} = \EFhn{0}; i < \EFhn{100000000}; ++i\EFrdc{)} \EFrdc{\{}
+            \EFo{\_sem}.P\EFrdd{(}\EFrdd{)};
+            \_cnt.dec\EFrdd{(}\EFrdd{)};
+            \EFo{\_sem}.V\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+W metodzie \texttt{main} podajemy semafora do wątków,
+uruchamiamy je, czekamy aż się zakończą i sprawdzamy finalny wynik.
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{public} \EFk{static} \EFt{void} \EFf{main}\EFrda{(}\EFt{String}\EFrdb{[}\EFrdb{]} \EFv{args}\EFrda{)} \EFrda{\{}
+\EFt{Counter} \EFv{cnt} = \EFk{new} \EFt{Counter}\EFrdb{(}\EFhn{0}\EFrdb{)};
+
+\EFt{BinarySemaphore} \EFv{sem} = \EFk{new} \EFt{BinarySemaphore}\EFrdb{(}\EFrdb{)};
+
+\EFt{IThread} \EFv{it} = \EFk{new} \EFt{IThread}\EFrdb{(}cnt, sem\EFrdb{)};
+\EFt{DThread} \EFv{dt} = \EFk{new} \EFt{DThread}\EFrdb{(}cnt, sem\EFrdb{)};
+
+it.start\EFrdb{(}\EFrdb{)};
+dt.start\EFrdb{(}\EFrdb{)};
+
+\EFk{try} \EFrdb{\{}
+        it.join\EFrdc{(}\EFrdc{)};
+        dt.join\EFrdc{(}\EFrdc{)};
+\EFrdb{\}} \EFk{catch}\EFrdb{(}InterruptedException ie\EFrdb{)} \EFrdb{\{} \EFrdb{\}}
+
+System.out.println\EFrdb{(}\EFs{"value="} + cnt.value\EFrdc{(}\EFrdc{)}\EFrdb{)};
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Wynik działania programu:
+\begin{tcolorbox}
+\begin{Verbatim}
+value=0
+\end{Verbatim}
+
+
+
+\end{tcolorbox}\textbf{Wnioski}: Stworzony przez nas semafor binarny może być użyty w celu synchronizacji
+działania wielu wątków, w celu wyeliminowania wyścigu.
+\section*{Zadanie 2}
+\label{sec:org512295d}
+Aby pokazać, że użycie instrukcji \texttt{if} nie wystarczy do implementacji semafora
+zademonstrujemy przykład pokazujący wyścig w takiej sytuacji.
+
+Mamy trzy wątki:
+\begin{center}
+\begin{tabular}{ll}
+nazwa & stan\\
+\hline
+\(a\) & jest uśpiony w \texttt{P()} (wait set)\\
+\(b\) & będzie chciał wywołać \texttt{P()}\\
+\(c\) & obecnie wywołuje metodę \texttt{V()} (posiada monitor)\\
+\end{tabular}
+\end{center}
+
+Rozważmy następujący przeplot:
+\begin{enumerate}
+\item \(b\) chce wywołać metodę \texttt{P()}, ale obecnie \(c\) posiada monitor, wątek \(b\) trafia więc
+do kolejki monitora(entry set).
+\item \(c\) w metodzie \texttt{V()} wywołuje \texttt{notify}, co sprawia, że jedyny wątek w wait set
+czyli wątek \(a\) jest oznaczony do wykonania. Wątek kończy metodę i zwalnia monitor.
+\item \(b\) jest w entry set, \(a\) w wait set. Zająć monitor może którykolwiek z nich.
+\(b\) zajmuje monitor, wywołuje metodę \texttt{P()}, ustawiając \texttt{isAvailable=false} i
+ostatecznie zwalnia monitor.
+\item Przez oznaczenie wątku \(a\) w kroku 2. wątek zajmuje monitor, ale przez
+brak pętli \texttt{while}, wątek ten ustawia \texttt{isAvailable=false} i zaczyna wykonywać swoją sekcję krytyczną.
+\end{enumerate}
+
+Jak widać mamy tutaj do czynienia z sytuacją absolutnie niedopuszczalną, bo
+wątki \(b\) i \(a\) myślą, że mają ekskluzywny dostęp do danego zasobu.  Gdybyśmy
+zastąpili \texttt{if} pętlą \texttt{while} wątek \(a\) po wybudzeniu, ponownie sprawdziłby warunek i
+znów trafił do wait set.
+
+Aby pokazać, że wymagana jest w implementacji pętla \texttt{while}, w metodzie \texttt{P()}
+zamieniamy instrukcję \texttt{while} na \texttt{if}.
+Następnie w metodzie \texttt{main} tworzymy cztery wątki w celu zwiększenia szans wyścigu:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{public} \EFk{static} \EFt{void} \EFf{main}\EFrda{(}\EFt{String}\EFrdb{[}\EFrdb{]} \EFv{args}\EFrda{)} \EFrda{\{}
+    \EFt{Counter} \EFv{cnt} = \EFk{new} \EFt{Counter}\EFrdb{(}\EFhn{0}\EFrdb{)};
+
+    \EFt{BinarySemaphore} \EFv{sem} = \EFk{new} \EFt{BinarySemaphore}\EFrdb{(}\EFrdb{)};
+
+    \EFt{List}\EFrdb{<}\EFt{Thread}\EFrdb{>} \EFv{threads} = List.of\EFrdb{(}
+        \EFk{new} \EFt{IThread}\EFrdc{(}cnt, sem\EFrdc{)},
+        \EFk{new} \EFt{DThread}\EFrdc{(}cnt, sem\EFrdc{)},
+        \EFk{new} \EFt{IThread}\EFrdc{(}cnt, sem\EFrdc{)},
+        \EFk{new} \EFt{DThread}\EFrdc{(}cnt, sem\EFrdc{)}
+    \EFrdb{)};
+
+
+    threads.forEach\EFrdb{(}Thread::start\EFrdb{)};
+
+    \EFk{try} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{Thread} \EFv{t} : threads\EFrdc{)} \EFrdc{\{}
+            t.join\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}} \EFk{catch}\EFrdb{(}InterruptedException ie\EFrdb{)} \EFrdb{\{} \EFrdb{\}}
+
+    System.out.println\EFrdb{(}\EFs{"value="} + cnt.value\EFrdc{(}\EFrdc{)}\EFrdb{)};
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Wynik programu:
+\begin{tcolorbox}
+\begin{Verbatim}
+value=-689
+\end{Verbatim}
+
+
+\end{tcolorbox}Jak widzimy wynik odbiega od poprawnego zera.
+
+\textbf{Wnioski}: Przy implementacji niskopoziomowych narzędzi synchronizacji musi być
+bardzo uważni. Wymóg zastosowania pętli \texttt{while} na pierwszy rzut oka wcale nie musi być
+oczywisty. Jego konieczność wynika z zasady działania monitora w języku Java.
+Implementując zatem takie narzędzia musimy być niezwykle pewni tego na
+jakich innych narzędziach je bazujemy.
+\section*{Zadanie 3}
+\label{sec:org234408c}
+Aby zaimplementować semafor licznikowy wykorzystamy zmienną \texttt{counter} oraz dwa semafory:
+\begin{itemize}
+\item \texttt{mutex} - chroni zmienną \texttt{counter}
+\item \texttt{gate} - ten semafor jest podniesiony gdy \texttt{counter > 0}, czyli wtedy
+gdy chociaż jeden zasób jest nadal dostępny.
+\end{itemize}
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{CountingSemaphore} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{BinarySemaphore} \EFv{gate};
+    \EFk{private} \EFk{final} \EFt{BinarySemaphore} \EFv{mutex};
+    \EFk{private} \EFt{int} \EFv{counter};
+
+    \EFk{public} CountingSemaphore\EFrdb{(}\EFt{int} \EFv{n}\EFrdb{)} \EFrdb{\{}
+        mutex = \EFk{new} \EFt{BinarySemaphore}\EFrdc{(}\EFrdc{)};
+        gate = \EFk{new} \EFt{BinarySemaphore}\EFrdc{(}\EFrdc{)};
+        counter = n;
+        \EFk{if} \EFrdc{(}counter == \EFhn{0}\EFrdc{)} \EFrdc{\{}
+            \EFo{gate}.P\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{P}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFo{gate}.P\EFrdc{(}\EFrdc{)};
+        \EFo{mutex}.P\EFrdc{(}\EFrdc{)};
+        counter--;
+        \EFk{if} \EFrdc{(}counter > \EFhn{0}\EFrdc{)} \EFrdc{\{}
+            \EFo{gate}.V\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+        \EFo{mutex}.V\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{V}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFo{mutex}.P\EFrdc{(}\EFrdc{)};
+        counter++;
+        \EFk{if} \EFrdc{(}counter >= \EFhn{1}\EFrdc{)} \EFrdc{\{}
+            \EFo{gate}.V\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+        \EFo{mutex}.V\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Aby zademonstrować działanie tej klasy zasymulujemy jedno z częstych zastosowań
+dla takiego semafora. Ograniczymy ilość otwartych gniazd przez nasz program, z
+racji tego, że ta liczba w systemie ma najczęściej swoją górną granicę.
+Przy naiwnym programie typu web-scraper, bez kontroli ilości otwartych gniazd
+moglibyśmy przekroczyć ten limit co skutkowałoby wyjątkami, system odmówił by
+utworzenia nowego gniazda.
+
+Kod wątku który symuluje otwarcie gniazda:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{OpenNetworkSocketThread} \EFk{extends} \EFt{Thread} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{CountingSemaphore} \EFv{\_sem};
+    \EFk{private} \EFk{final} \EFt{int} \EFv{id};
+
+    \EFk{public} OpenNetworkSocketThread\EFrdb{(}\EFt{int} \EFv{id}, CountingSemaphore s\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.id = id;
+        \_sem = s;
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFo{\_sem}.P\EFrdc{(}\EFrdc{)};
+        System.out.println\EFrdc{(}\EFs{"Opened network socket in "} + id\EFrdc{)};
+        \EFk{try} \EFrdc{\{}
+            Thread.sleep\EFrdd{(}ThreadLocalRandom.current\EFrda{(}\EFrda{)}.nextInt\EFrda{(}\EFhn{100}, \EFhn{300}\EFrda{)}\EFrdd{)};
+        \EFrdc{\}} \EFk{catch} \EFrdc{(}InterruptedException e\EFrdc{)} \EFrdc{\{}
+            e.printStackTrace\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+        System.out.println\EFrdc{(}\EFs{"Closing network socket in "} + id\EFrdc{)};
+        \EFo{\_sem}.V\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Metoda \texttt{main}.
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{public} \EFk{static} \EFt{void} \EFf{main}\EFrda{(}\EFt{String}\EFrdb{[}\EFrdb{]} \EFv{args}\EFrda{)} \EFrda{\{}
+    \EFt{var} \EFv{sem} = \EFk{new} \EFt{CountingSemaphore}\EFrdb{(}\EFhn{3}\EFrdb{)};
+    \EFt{List}\EFrdb{<}\EFt{OpenNetworkSocketThread}\EFrdb{>} \EFv{threads} =
+        IntStream.range\EFrdb{(}\EFhn{0}, \EFhn{10}\EFrdb{)}
+            .mapToObj\EFrdb{(}i -> \EFk{new} \EFt{OpenNetworkSocketThread}\EFrdc{(}i, sem\EFrdc{)}\EFrdb{)}
+            .toList\EFrdb{(}\EFrdb{)};
+
+    theads.forEach\EFrdb{(}Thread::start\EFrdb{)};
+    threads.forEach\EFrdb{(}t -> \EFrdc{\{}
+        \EFk{try} \EFrdd{\{}
+            t.join\EFrda{(}\EFrda{)};
+        \EFrdd{\}} \EFk{catch} \EFrdd{(}InterruptedException e\EFrdd{)} \EFrdd{\{}
+            e.printStackTrace\EFrda{(}\EFrda{)};
+        \EFrdd{\}}
+    \EFrdc{\}}\EFrdb{)};
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Wynik programu:
+\begin{tcolorbox}
+\begin{Verbatim}
+Opened network socket in 1
+Opened network socket in 0
+Opened network socket in 2
+Closing network socket in 1
+Opened network socket in 3
+Closing network socket in 2
+Opened network socket in 4
+Closing network socket in 0
+Opened network socket in 6
+Closing network socket in 3
+Opened network socket in 5
+Closing network socket in 4
+Opened network socket in 7
+Closing network socket in 6
+Opened network socket in 8
+Closing network socket in 5
+Opened network socket in 9
+Closing network socket in 7
+Closing network socket in 8
+Closing network socket in 9
+\end{Verbatim}
+
+
+\end{tcolorbox}Jak widać stworzony przez nas semafor poprawnie umożliwia utworzenie jedynie trzech gniazd w
+danym momencie.
+
+Semafor binarny jest szczególnym przypadkiem semafora licznikowego. Semafor
+licznikowy zachowuje się tak samo jak semafor binarny gdy liczba zasobów jest
+równa jeden. Nie oznacza to jednak, że zawsze powinniśmy korzystać z semaforów
+licznikowych skoro są ogólniejsze od semaforów binarnych. Semafor binarny
+ma prostszą implementację(licznikowy składa się właśnie z dwóch takich semaforów),
+przez to jeżeli potrzebujemy zwykłego mutex'a to powinniśmy właśnie użyć semafora binarnego.
+\section*{Bibliografia}
+\label{sec:org7dbccd1}
+\begin{itemize}
+\item Bill Venners: \emph{Inside the Java Virtual Machine Chapter 20}
+\end{itemize}
+\end{document}

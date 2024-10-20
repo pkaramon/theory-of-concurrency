@@ -9,3 +9,4 @@
 #+latex_header: \captionsetup{labelfont=bf}
 #+latex_header: \usepackage{float}
 #+property: header-args:rust :exports both :results output :wrap example :eval no
+#+property: header-args:java :exports code :eval no

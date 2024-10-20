@@ -1,0 +1,425 @@
+#+title: Laboratorium 1 - Współbieżność w Javie
+#+date: 14.10.2024r.
+#+author: Piotr Karamon
+#+setupfile: ../setupfile.org
+
+
+* Treści zadań
+** Zadanie 1
+Napisać program (szkielet), który uruchamia 2 wątki, z których jeden zwiększa
+wartość zmiennej całkowitej o 1, drugi wątek zmniejsza wartość o 1. Zakładając
+że na początku wartość zmiennej Counter była 0, chcielibyśmy wiedzieć jaka
+będzie wartość tej zmiennej po wykonaniu 10000 operacji zwiększania i
+zmniejszania przez obydwa wątki.
+
+** Zadanie 2
+Na podstawie 100 wykonań programu z p.1, stworzyć histogram końcowych wartości zmiennej Counter.
+
+** Zadanie 3
+Spróbować wprowadzić mechanizm do programu z p.1, który zagwarantowałby przewidywalną końcową wartość zmiennej Counter. Nie używać żadnych systemowych mechanizmów, tylko swój autorski.
+** Zadanie dodatkowe
+W systemie działa N wątków, które dzielą obiekt licznika (początkowy stan licznika = 0).
+
+Każdy wątek wykonuje w pętli 5 razy inkrementację licznika. Zakładamy, że inkrementacja składa się z sekwencji trzech instrukcji: =read=, =inc=, =write= (odczyt z pamięci, zwiększenie o 1, zapis do pamięci). Wątki nie są synchronizowane.
+
+1. Jaka jest teoretycznie najmniejsza wartość licznika po zakończeniu działania wszystkich wątków i jaka kolejność instrukcji (przeplot) do niej prowadzi?
+2. Spróbować znaleźć dowód, że będzie to zawsze najmniejsza wartość.
+
+
+* Zadanie 1
+W celu wykonania eksperymentu tworzymy dwie klasy, które dziedziczą po klasie
+=Thread=. Nadpisujemy w nich metodę =run= gdzie umieszczamy logikę jaką chcemy by nasze
+wątki wykonywały. Wątki uruchamiamy metodą =start()=. By sprawdzić końcową wartość
+zmiennej =Counter= musimy zaczekać aż wątki skończą pracę, używamy do tego
+metody =join()=.
+
+
+#+begin_src java :eval never
+// Race.java
+// Wyscig
+
+class Counter {
+    private int _val;
+
+    public Counter(int n) {
+        _val = n;
+    }
+
+    public void inc() {
+        _val++;
+    }
+
+    public void dec() {
+        _val--;
+    }
+
+    public int value() {
+        return _val;
+    }
+}
+
+// Watek, ktory inkrementuje licznik 100.000 razy
+class IThread extends Thread {
+    private final Counter counter;
+
+    public IThread(Counter counter) {
+        this.counter = counter;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 100_000; i++) {
+            counter.inc();
+        }
+    }
+}
+
+// Watek, ktory dekrementuje licznik 100.000 razy
+class DThread extends Thread {
+    private final Counter counter;
+
+    public DThread(Counter counter) {
+        this.counter = counter;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 100_000; i++) {
+            counter.dec();
+        }
+    }
+}
+
+public class Race {
+
+    public static void main(String[] args) {
+        Counter cnt = new Counter(0);
+
+        IThread incThread = new IThread(cnt);
+        DThread decThread = new DThread(cnt);
+
+        incThread.start();
+        decThread.start();
+
+        try {
+            incThread.join();
+            decThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("stan=" + cnt.value());
+    }
+}
+
+#+end_src
+
+W wyniku uruchomienia otrzymujemy następujące wyjście:
+#+begin_example
+stan=1955
+#+end_example
+
+*Wnioski*: Jest to wynik znacznie odbiegający od spodziewanego zera.  Mamy tutaj do
+czynienia z wyścigiem, czyli sytuacją przy której więcej niż jeden wątek
+korzysta jednocześnie z zasobu współdzielonego, przy czym co najmniej jeden
+próbuje go zmienić. Wyścig sprawia, że nasz program staje się
+niedeterministyczny. Wątki wykonują operacje zwiększania i zmniejszania na
+zmiennej =Counter= bez synchronizacji. Może to prowadzić do sytuacji, w której
+jeden wątek odczytuje wartość Counter, podczas gdy drugi wątek ją zmienia, co
+prowadzi do utraty niektórych operacji.
+
+* Zadanie 2
+Program z zadania 1 uruchamiamy 100 razy w celu stworzenia histogramu.
+Korzystamy z powłoki =bash= oraz prostej komendy w celu zebrania danych.
+
+#+begin_src sh  :eval never
+for i in {1..100}; do ./gradlew run |  grep -E -o 'stan=.*' | sed 's/stan=//' >> output.txt; done
+#+end_src
+
+Z otrzymanych danych w pliku =output.txt= tworzymy histogram.
+
+#+begin_src python :results graphics file output :file histogram.png :exports results
+import numpy as np
+import matplotlib.pyplot as plt
+import scienceplots
+
+plt.style.use('science')
+
+values = [
+    13570,
+1596,
+16273,
+48922,
+10974,
+18685,
+13288,
+6841,
+-423,
+-3120,
+8281,
+-31810,
+1713,
+1230,
+23447,
+41779,
+3053,
+36341,
+39848,
+-132,
+50682,
+-41788,
+8716,
+14696,
+9663,
+2442,
+-4820,
+20091,
+20120,
+35909,
+6538,
+16716,
+16390,
+10297,
+37671,
+26183,
+11759,
+16921,
+18266,
+18143,
+12714,
+20880,
+69785,
+16970,
+20584,
+-22167,
+20815,
+16365,
+11780,
+5549,
+7590,
+-18921,
+24190,
+-1617,
+10751,
+-14119,
+-15043,
+23312,
+22210,
+26259,
+22527,
+-22826,
+-1517,
+20878,
+11065,
+729,
+-18729,
+-2217,
+33169,
+26093,
+46128,
+-28790,
+4349,
+42904,
+16259,
+-8737,
+-7918,
+41270,
+-20402,
+-17222,
+28795,
+24668,
+15034,
+14754,
+-6230,
+-1909,
+14354,
+-3933,
+16938,
+22335,
+-1560,
+13828,
+-3442,
+36283,
+-11911,
+-19526,
+-4902,
+-14700,
+-2517,
+5650,
+]
+
+plt.hist(values, bins=25, color='blue', edgecolor='black', alpha=0.7)
+
+# Add labels and title
+plt.xlabel('Wartość zmiennej counter')
+# plt.ylabel('Częs')
+# plt.title('Histogram of Values')
+
+#+end_src
+
+
+#+CAPTION: Histogram powstały ze 100 uruchomień programu z zadania 1.
+#+ATTR_LATEX: :placement [H]
+#+RESULTS:
+[[file:histogram.png]]
+
+*Wnioski*: Widzimy bardzo duży rozrzut wartości. Co ciekawe rozkład zdaje się być niesymetryczny względem zera.
+Histogram pokazuje fakt, iż obecnie bez żadnej synchronizacji nasz program działa w bardzo losowy i
+nieprzewidywalny sposób. Jednakże zgodnie z naszą intuicją najwięcej wyników znajduje się blisko zera.
+* Zadanie 3
+Celem zadania jest wprowadzenie autorskiego mechanizmu do programu z zadania 1, który
+zagwarantuje nam deterministyczny wynik.
+
+To co możemy zrobić to wymuszenie kolejności typu: inc, dec, inc, dec, itd.
+Do tego celu potrzebujemy wspólnej zmiennej:
+
+#+begin_src java :eval no
+public static volatile int turn = 0;
+#+end_src
+
+Wartość 0 oznacza, że wątek inkrementujący ma wykonać jedno =inc()=.
+Wartość 1 oznacza, że wątek dekrementujący ma wykonać jedno =dec()=.
+Korzystamy tutaj ze słowa kluczowego =volatile=. Dzięki niemu zmiany tej zmiennej są
+natychmiast widoczne dla innych wątków. To słowo zapobiega również optymalizacji
+polegającej na pobraniu tej zmiennej z pamięci cache.
+
+Potrzebna jest zmiana metod =run()= w naszych wątkach. Będziemy po prostu czekać w
+pętli, aż nie najdzie na nas kolej.
+
+#+begin_src java :eval no
+class IThread extends Thread {
+    private final Counter counter;
+
+    public IThread(Counter counter) {
+        this.counter = counter;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 100_000; i++) {
+            while(true) {
+                if (Race.turn == 0) {
+                    counter.inc();
+                    Race.turn = 1;
+                    break;
+                }
+            }
+
+        }
+    }
+}
+
+class DThread extends Thread {
+    private final Counter counter;
+
+    public DThread(Counter counter) {
+        this.counter = counter;
+    }
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 100_000; i++) {
+            while(true) {
+                if (Race.turn == 1) {
+                    counter.dec();
+                    Race.turn = 0;
+                    break;
+                }
+            }
+        }
+    }
+}
+#+end_src
+
+Testujemy nasze rozwiązanie uruchamiając je 200 razy.
+#+begin_src java :eval no
+public static void main(String[] args) {
+    var allZeros = IntStream.range(0, 200).map(i -> runSample()).allMatch(i -> i == 0);
+    System.out.println("all zeros = "+allZeros);
+}
+
+private static int runSample() {
+    Counter cnt = new Counter(0);
+
+    Race.turn = 0;
+
+    IThread incThread = new IThread(cnt);
+    DThread decThread = new DThread(cnt);
+
+    incThread.start();
+    decThread.start();
+
+    try {
+            incThread.join();
+            decThread.join();
+    } catch (InterruptedException e) {
+            e.printStackTrace();
+    }
+
+    return cnt.value();
+}
+#+end_src
+
+Otrzymane wyjście:
+#+begin_example
+all zeros = true
+#+end_example
+
+*Wnioski*: Nasze rozwiązanie zdaje się działać, jednakże jest ono wysoce nieefektywne głównie dlatego, że
+wątki używają pętli =while (true)= do oczekiwania na zmianę stanu zmiennej =turn=.
+To prowadzi do "busy waiting", gdzie wątki nie wykonują żadnej użytecznej
+pracy, a jedynie ciągle sprawdzają stan zmiennej. To jest bardzo nieefektywne z
+perspektywy zasobów procesora. Dlatego realistycznie powinniśmy skorzystać z gotowych
+mechanizmów takich jak:
++ bloki/funkcje =synchronized=
++ =ReentranLock=
++ =Semaphore=
++ zmienne atomowe w tym przypadku =AtomicInteger=
+* Zadanie dodatkowe
+Idea rozwiązania polega na wczesnym wykonaniu instrukcji =read= oraz =inc= przez jeden wątek,
+następnie na pozwoleniu na pracę innych wątków, których praca zostanie nadpisana
+po wywołaniu =write= przez ten wczesny wątek.
+
+
+Dla $N=1$ problem staje się całkowicie sekwencyjny, zatem otrzymamy wartość równą 5.
+Dla $N > 1$ najmniejsza możliwa wartość licznika to 2.
+Odpowiadający przeplot:
+
+| wątek        | instrukcja                              |
+|--------------+-----------------------------------------|
+| $w_1$        | read                                    |
+| $w_1$        | inc                                     |
+| $w_3$..$w_N$ | wykonują pełne 5 iteracji               |
+| $w_2$        | wykonuje pełne 4 iteracji               |
+| $w_1$        | write(teraz ~counter=1~)                  |
+| $w_2$        | read(wczytanie ~counter=1~)               |
+| $w_1$        | wykonuje pozostałe 4 iteracje w całości |
+| $w_2$        | inc                                     |
+| $w_2$        | write(wpisanie ~counter=2~)               |
+
+
+Najmniejsza możliwa wartość licznika nie może być równa 0,
+ponieważ niezależnie od przeplotu końcową instrukcją jest =write=,
+odpowiadający mu =read= (ten sam wątek, ta sama iteracja) wczytał liczbę
+która jest $\ge 0$, przez to dzięki =inc= wpiszemy wartość $>=1$.
+
+Teraz zastanówmy się, czy możliwe jest by licznik miał na końcu wartość 1.
+Zrobimy dowód nie wprost.
+
+Jeżeli na końcu dostaliśmy wartość 1, to ostatnia instrukcja =write=, wpisała
+wartość 1(niech wykona ją wątek $w_{a}$).  Odpowiadający tej instrukcji =read=
+(ten sam wątek, ta sama iteracja) musiał wczytać 0. To oznacza, że żaden wątek
+nie mógł wcześniej niż ta instrukcja =read= wykonać instrukcji =write= (bo wczytana
+wartość byłaby $> 0$). Ale to oznacza, że również wątek $w_a$ nie mógł wykonać
+instrukcji =write=, co jest sprzecznością, ponieważ w momencie wykonania ostatniej
+swojej instrukcji =read= jest w 5 iteracji, a co za tym idzie wykonał on 4 instrukcje =write=.
+
+*Wnioski*: Możliwe przeploty potrafią prowadzić do bardzo zaskakujących wyników.
+Opisany powyżej przeplot jest kompletnie nieintuicyjny oraz bardzo mało prawdopodobny,
+fakt jego istnienia pokazuje trudność programowania współbieżnego oraz analizy
+algorytmów współbieżnych.
+
+* Bibliografia
++ Bill Venners: /Inside the Java Virtual Machine Chapter 20/
++ [[https://docs.oracle.com/javase/tutorial/essential/concurrency/atomic.html][Atomic Access]]
++ [[https://download.java.net/java/early_access/valhalla/docs/api/java.base/java/lang/Thread.html][Dokumentacja klasy thread]]
