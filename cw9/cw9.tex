@@ -1,0 +1,672 @@
+% Created 2024-12-09 Mon 15:16
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\selectlanguage{polish}
+\usepackage{caption}
+\usepackage{booktabs}
+\captionsetup{labelfont=bf}
+\usepackage{float}
+\usepackage{svg}
+\usepackage[a4paper, total={6.5in, 10in}]{geometry}
+\author{Piotr Karamon}
+\date{09.12.2024r.}
+\title{Laboratorium 9 - Przetwarzanie asynchroniczne (wstęp do Node.js)}
+\hypersetup{
+ pdfauthor={Piotr Karamon},
+ pdftitle={Laboratorium 9 - Przetwarzanie asynchroniczne (wstęp do Node.js)},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.2 (Org mode 9.7.11)}, 
+ pdflang={Polish}}
+
+% Setup for code blocks [1/2]
+
+\usepackage{fvextra}
+
+\fvset{%
+  commandchars=\\\{\},
+  highlightcolor=white!95!black!80!blue,
+  breaklines=true,
+  breaksymbol=\color{white!60!black}\tiny\ensuremath{\hookrightarrow}}
+
+% Make line numbers smaller and grey.
+\renewcommand\theFancyVerbLine{\footnotesize\color{black!40!white}\arabic{FancyVerbLine}}
+
+\usepackage{xcolor}
+
+% In case engrave-faces-latex-gen-preamble has not been run.
+\providecolor{EfD}{HTML}{f7f7f7}
+\providecolor{EFD}{HTML}{28292e}
+
+% Define a Code environment to prettily wrap the fontified code.
+\usepackage[breakable,xparse]{tcolorbox}
+\DeclareTColorBox[]{Code}{o}%
+{colback=EfD!98!EFD, colframe=EfD!95!EFD,
+  fontupper=\footnotesize\setlength{\fboxsep}{0pt},
+  colupper=EFD,
+  IfNoValueTF={#1}%
+  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
+    boxrule=0.5pt, left=2pt}%
+  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
+    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
+  right=2pt, top=1pt, bottom=0.5pt,
+  breakable}
+
+% Support listings with captions
+\usepackage{float}
+\floatstyle{plain}
+\newfloat{listing}{htbp}{lst}
+\newcommand{\listingsname}{Listing}
+\floatname{listing}{\listingsname}
+\newcommand{\listoflistingsname}{List of Listings}
+\providecommand{\listoflistings}{\listof{listing}{\listoflistingsname}}
+
+
+% Setup for code blocks [2/2]: syntax highlighting colors
+
+\newcommand\efstrut{\vrule height 2.1ex depth 0.8ex width 0pt}
+\definecolor{EFD}{HTML}{000000}
+\definecolor{EfD}{HTML}{ffffff}
+\newcommand{\EFD}[1]{\textcolor{EFD}{#1}} % default
+\newcommand{\EFvp}[1]{#1} % variable-pitch
+\definecolor{EFh}{HTML}{595959}
+\newcommand{\EFh}[1]{\textcolor{EFh}{#1}} % shadow
+\definecolor{EFsc}{HTML}{005f5f}
+\newcommand{\EFsc}[1]{\textcolor{EFsc}{\textbf{#1}}} % success
+\definecolor{EFw}{HTML}{884900}
+\newcommand{\EFw}[1]{\textcolor{EFw}{\textbf{#1}}} % warning
+\definecolor{EFe}{HTML}{a60000}
+\newcommand{\EFe}[1]{\textcolor{EFe}{\textbf{#1}}} % error
+\definecolor{EFl}{HTML}{3548cf}
+\newcommand{\EFl}[1]{\textcolor{EFl}{#1}} % link
+\definecolor{EFlv}{HTML}{721045}
+\newcommand{\EFlv}[1]{\textcolor{EFlv}{#1}} % link-visited
+\definecolor{Efhi}{HTML}{b2e4dc}
+\newcommand{\EFhi}[1]{\colorbox{Efhi}{\efstrut{}#1}} % highlight
+\definecolor{EFc}{HTML}{595959}
+\newcommand{\EFc}[1]{\textcolor{EFc}{\textit{#1}}} % font-lock-comment-face
+\definecolor{EFcd}{HTML}{595959}
+\newcommand{\EFcd}[1]{\textcolor{EFcd}{\textit{#1}}} % font-lock-comment-delimiter-face
+\definecolor{EFs}{HTML}{3548cf}
+\newcommand{\EFs}[1]{\textcolor{EFs}{#1}} % font-lock-string-face
+\definecolor{EFd}{HTML}{2a5045}
+\newcommand{\EFd}[1]{\textcolor{EFd}{\textit{#1}}} % font-lock-doc-face
+\definecolor{EFm}{HTML}{7c318f}
+\newcommand{\EFm}[1]{\textcolor{EFm}{\textit{#1}}} % font-lock-doc-markup-face
+\definecolor{EFk}{HTML}{531ab6}
+\newcommand{\EFk}[1]{\textcolor{EFk}{#1}} % font-lock-keyword-face
+\definecolor{EFb}{HTML}{8f0075}
+\newcommand{\EFb}[1]{\textcolor{EFb}{#1}} % font-lock-builtin-face
+\definecolor{EFf}{HTML}{721045}
+\newcommand{\EFf}[1]{\textcolor{EFf}{#1}} % font-lock-function-name-face
+\definecolor{EFv}{HTML}{005e8b}
+\newcommand{\EFv}[1]{\textcolor{EFv}{#1}} % font-lock-variable-name-face
+\definecolor{EFt}{HTML}{005f5f}
+\newcommand{\EFt}[1]{\textcolor{EFt}{#1}} % font-lock-type-face
+\definecolor{EFo}{HTML}{0000b0}
+\newcommand{\EFo}[1]{\textcolor{EFo}{#1}} % font-lock-constant-face
+\definecolor{EFwr}{HTML}{884900}
+\newcommand{\EFwr}[1]{\textcolor{EFwr}{#1}} % font-lock-warning-face
+\definecolor{EFnc}{HTML}{a60000}
+\newcommand{\EFnc}[1]{\textcolor{EFnc}{\textbf{#1}}} % font-lock-negation-char-face
+\definecolor{EFpp}{HTML}{a0132f}
+\newcommand{\EFpp}[1]{\textcolor{EFpp}{#1}} % font-lock-preprocessor-face
+\definecolor{EFrc}{HTML}{00663f}
+\newcommand{\EFrc}[1]{\textcolor{EFrc}{#1}} % font-lock-regexp-grouping-construct
+\definecolor{EFrb}{HTML}{721045}
+\newcommand{\EFrb}[1]{\textcolor{EFrb}{#1}} % font-lock-regexp-grouping-backslash
+\definecolor{Efob}{HTML}{f2f2f2}
+\newcommand{\EFob}[1]{\colorbox{Efob}{\efstrut{}#1}} % org-block
+\definecolor{EFobb}{HTML}{595959}
+\definecolor{Efobb}{HTML}{f2f2f2}
+\newcommand{\EFobb}[1]{\colorbox{Efobb}{\efstrut{}\textcolor{EFobb}{#1}}} % org-block-begin-line
+\definecolor{EFobe}{HTML}{595959}
+\definecolor{Efobe}{HTML}{f2f2f2}
+\newcommand{\EFobe}[1]{\colorbox{Efobe}{\efstrut{}\textcolor{EFobe}{#1}}} % org-block-end-line
+\newcommand{\EFOa}[1]{\textbf{#1}} % outline-1
+\definecolor{EFOb}{HTML}{624416}
+\newcommand{\EFOb}[1]{\textcolor{EFOb}{\textbf{#1}}} % outline-2
+\definecolor{EFOc}{HTML}{193668}
+\newcommand{\EFOc}[1]{\textcolor{EFOc}{\textbf{#1}}} % outline-3
+\definecolor{EFOd}{HTML}{721045}
+\newcommand{\EFOd}[1]{\textcolor{EFOd}{\textbf{#1}}} % outline-4
+\definecolor{EFOe}{HTML}{2a5045}
+\newcommand{\EFOe}[1]{\textcolor{EFOe}{\textbf{#1}}} % outline-5
+\definecolor{EFOf}{HTML}{7f0000}
+\newcommand{\EFOf}[1]{\textcolor{EFOf}{\textbf{#1}}} % outline-6
+\definecolor{EFOg}{HTML}{3f578f}
+\newcommand{\EFOg}[1]{\textcolor{EFOg}{\textbf{#1}}} % outline-7
+\definecolor{EFOh}{HTML}{595959}
+\newcommand{\EFOh}[1]{\textcolor{EFOh}{\textbf{#1}}} % outline-8
+\definecolor{EFhn}{HTML}{0000b0}
+\newcommand{\EFhn}[1]{\textcolor{EFhn}{#1}} % highlight-numbers-number
+\newcommand{\EFhq}[1]{#1} % highlight-quoted-quote
+\newcommand{\EFhs}[1]{#1} % highlight-quoted-symbol
+\newcommand{\EFrda}[1]{#1} % rainbow-delimiters-depth-1-face
+\definecolor{EFrdb}{HTML}{dd22dd}
+\newcommand{\EFrdb}[1]{\textcolor{EFrdb}{#1}} % rainbow-delimiters-depth-2-face
+\definecolor{EFrdc}{HTML}{008899}
+\newcommand{\EFrdc}[1]{\textcolor{EFrdc}{#1}} % rainbow-delimiters-depth-3-face
+\definecolor{EFrdd}{HTML}{972500}
+\newcommand{\EFrdd}[1]{\textcolor{EFrdd}{#1}} % rainbow-delimiters-depth-4-face
+\definecolor{EFrde}{HTML}{808000}
+\newcommand{\EFrde}[1]{\textcolor{EFrde}{#1}} % rainbow-delimiters-depth-5-face
+\definecolor{EFrdf}{HTML}{531ab6}
+\newcommand{\EFrdf}[1]{\textcolor{EFrdf}{#1}} % rainbow-delimiters-depth-6-face
+\definecolor{EFrdg}{HTML}{008900}
+\newcommand{\EFrdg}[1]{\textcolor{EFrdg}{#1}} % rainbow-delimiters-depth-7-face
+\definecolor{EFrdh}{HTML}{3548cf}
+\newcommand{\EFrdh}[1]{\textcolor{EFrdh}{#1}} % rainbow-delimiters-depth-8-face
+\definecolor{EFrdi}{HTML}{8f0075}
+\newcommand{\EFrdi}[1]{\textcolor{EFrdi}{#1}} % rainbow-delimiters-depth-9-face
+\definecolor{EFany}{HTML}{6f5500}
+\definecolor{Efany}{HTML}{6f5500}
+\newcommand{\EFany}[1]{\colorbox{Efany}{\efstrut{}\textcolor{EFany}{#1}}} % ansi-color-yellow
+\definecolor{EFanr}{HTML}{a60000}
+\definecolor{Efanr}{HTML}{a60000}
+\newcommand{\EFanr}[1]{\colorbox{Efanr}{\efstrut{}\textcolor{EFanr}{#1}}} % ansi-color-red
+\definecolor{EFanb}{HTML}{000000}
+\definecolor{Efanb}{HTML}{000000}
+\newcommand{\EFanb}[1]{\colorbox{Efanb}{\efstrut{}\textcolor{EFanb}{#1}}} % ansi-color-black
+\definecolor{EFang}{HTML}{006800}
+\definecolor{Efang}{HTML}{006800}
+\newcommand{\EFang}[1]{\colorbox{Efang}{\efstrut{}\textcolor{EFang}{#1}}} % ansi-color-green
+\definecolor{EFanB}{HTML}{0031a9}
+\definecolor{EfanB}{HTML}{0031a9}
+\newcommand{\EFanB}[1]{\colorbox{EfanB}{\efstrut{}\textcolor{EFanB}{#1}}} % ansi-color-blue
+\definecolor{EFanc}{HTML}{005e8b}
+\definecolor{Efanc}{HTML}{005e8b}
+\newcommand{\EFanc}[1]{\colorbox{Efanc}{\efstrut{}\textcolor{EFanc}{#1}}} % ansi-color-cyan
+\definecolor{EFanw}{HTML}{a6a6a6}
+\definecolor{Efanw}{HTML}{a6a6a6}
+\newcommand{\EFanw}[1]{\colorbox{Efanw}{\efstrut{}\textcolor{EFanw}{#1}}} % ansi-color-white
+\definecolor{EFanm}{HTML}{721045}
+\definecolor{Efanm}{HTML}{721045}
+\newcommand{\EFanm}[1]{\colorbox{Efanm}{\efstrut{}\textcolor{EFanm}{#1}}} % ansi-color-magenta
+\definecolor{EFANy}{HTML}{884900}
+\definecolor{EfANy}{HTML}{884900}
+\newcommand{\EFANy}[1]{\colorbox{EfANy}{\efstrut{}\textcolor{EFANy}{#1}}} % ansi-color-bright-yellow
+\definecolor{EFANr}{HTML}{972500}
+\definecolor{EfANr}{HTML}{972500}
+\newcommand{\EFANr}[1]{\colorbox{EfANr}{\efstrut{}\textcolor{EFANr}{#1}}} % ansi-color-bright-red
+\definecolor{EFANb}{HTML}{595959}
+\definecolor{EfANb}{HTML}{595959}
+\newcommand{\EFANb}[1]{\colorbox{EfANb}{\efstrut{}\textcolor{EFANb}{#1}}} % ansi-color-bright-black
+\definecolor{EFANg}{HTML}{00663f}
+\definecolor{EfANg}{HTML}{00663f}
+\newcommand{\EFANg}[1]{\colorbox{EfANg}{\efstrut{}\textcolor{EFANg}{#1}}} % ansi-color-bright-green
+\definecolor{EFANB}{HTML}{3548cf}
+\definecolor{EfANB}{HTML}{3548cf}
+\newcommand{\EFANB}[1]{\colorbox{EfANB}{\efstrut{}\textcolor{EFANB}{#1}}} % ansi-color-bright-blue
+\definecolor{EFANc}{HTML}{005f5f}
+\definecolor{EfANc}{HTML}{005f5f}
+\newcommand{\EFANc}[1]{\colorbox{EfANc}{\efstrut{}\textcolor{EFANc}{#1}}} % ansi-color-bright-cyan
+\definecolor{EFANw}{HTML}{ffffff}
+\definecolor{EfANw}{HTML}{ffffff}
+\newcommand{\EFANw}[1]{\colorbox{EfANw}{\efstrut{}\textcolor{EFANw}{#1}}} % ansi-color-bright-white
+\definecolor{EFANm}{HTML}{531ab6}
+\definecolor{EfANm}{HTML}{531ab6}
+\newcommand{\EFANm}[1]{\colorbox{EfANm}{\efstrut{}\textcolor{EFANm}{#1}}} % ansi-color-bright-magenta
+\begin{document}
+
+\maketitle
+\section*{Treści zadań}
+\label{sec:org1f6ae23}
+\subsection*{Zadanie 1}
+\label{sec:orgf6f3bcb}
+\begin{itemize}
+\item 1a: Zaimplementuj funkcję loop, wg instrukcji w pliku z Rozwiązaniem 3.
+\item 1b: wykorzystaj funkcję waterfall biblioteki async.
+\end{itemize}
+\subsection*{Zadanie 2}
+\label{sec:org4f67c76}
+Proszę napisać program obliczający liczbę linii we wszystkich plikach tekstowych
+z danego drzewa katalogów. Do testów proszę wykorzystać zbiór danych Traceroute
+Data. Program powinien wypisywać liczbę linii w każdym pliku, a na końcu ich
+globalną sumę. Proszę zmierzyć czas wykonania dwóch wersji programu: z
+synchronicznym (jeden po drugim) przetwarzaniem plików, z asynchronicznym
+(jednoczesnym) przetwarzaniem plików.
+Przydatne moduły:
+\begin{itemize}
+\item \texttt{walkdir} -- trawersacja drzewa katalogów
+\item \texttt{fs} -- operacje na systemie plików (moduł wbudowany)
+\end{itemize}
+
+Do obliczania liczby linii w pliku tekstowym proszę wykorzystać następujący fragment kodu:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}fs.createReadStream(file).on(\EFs{'data'}, \EFk{function}(\EFv{chunk}) \{
+                count += chunk.toString(\EFs{'utf8'})
+                .split(\EFs{/\char92{}r\char92{}n|[\char92{}n\char92{}r\char92{}u0085\char92{}u2028\char92{}u2029]/}g)
+                .length-\EFhn{1};
+            \}).on(\EFs{'end'}, \EFk{function}() \{
+                console.log(file, count);
+            \}).on(\EFs{'error'}, \EFk{function}(\EFv{err}) \{
+                console.error(err);
+            \});
+\end{Verbatim}
+\end{Code}
+\section*{Zadanie 1}
+\label{sec:orgb12d695}
+Mamy daną sekwencję operacji:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{function} \EFf{printAsync}(\EFv{s}, \EFv{cb}) \{
+  \EFk{var} \EFv{delay} = Math.floor(Math.random() * \EFhn{1000} + \EFhn{500});
+  setTimeout(\EFk{function} () \{
+    console.log(s);
+    \EFk{if} (cb) cb();
+  \}, delay);
+\}
+
+\EFk{function} \EFf{task}(\EFv{n}) \{
+  \EFk{return} \EFk{new} \EFt{Promise}((resolve, reject) => \{
+    printAsync(n, \EFk{function} () \{
+      resolve(n);
+    \});
+  \});
+\}
+
+task(\EFhn{1})
+  .then((n) => \{
+    console.log(\EFs{"task"}, n, \EFs{"done"});
+    \EFk{return} task(\EFhn{2});
+  \})
+  .then((n) => \{
+    console.log(\EFs{"task"}, n, \EFs{"done"});
+    \EFk{return} task(\EFhn{3});
+  \})
+  .then((n) => \{
+    console.log(\EFs{"task"}, n, \EFs{"done"});
+    console.log(\EFs{"done"});
+  \});
+\end{Verbatim}
+\end{Code}
+\subsection*{Funkcja \texttt{loop(m)}}
+\label{sec:org07079a3}
+Wykorzystamy fakt, że taki ciąg operacji zwraca \texttt{Promise}, a zatem możemy
+wywołać na nim funkcję \texttt{then} w pętli \texttt{for}, by ''doklejać'' kolejne zadania.
+
+Tworzymy funkcję \texttt{task123}.
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{function} \EFf{task123}() \{
+  \EFk{return} task(\EFhn{1})
+    .then((n) => \{
+      console.log(\EFs{"task"}, n, \EFs{"done"});
+      \EFk{return} task(\EFhn{2});
+    \})
+    .then((n) => \{
+      console.log(\EFs{"task"}, n, \EFs{"done"});
+      \EFk{return} task(\EFhn{3});
+    \})
+    .then((n) => \{
+      console.log(\EFs{"task"}, n, \EFs{"done"});
+      console.log(\EFs{"done"});
+    \});
+\}
+\end{Verbatim}
+\end{Code}
+
+Funkcja \texttt{loop}:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{function} \EFf{loop}(\EFv{m}) \{
+  \EFk{let} \EFv{promise} = task123();
+  \EFk{for} (i = \EFhn{1}; i < m; i++) \{
+    promise = promise.then(task123);
+  \}
+  \EFk{return} promise;
+\}
+
+loop(\EFhn{4});
+\end{Verbatim}
+\end{Code}
+
+Wynik programu(pierwotny ciąg operacji został wykomentowany):
+\begin{tcolorbox}
+\begin{Verbatim}
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+\end{Verbatim}
+
+
+\end{tcolorbox}
+\subsection*{Funkcja \texttt{loopWithWaterfall(m)}}
+\label{sec:org35fde45}
+Do rozwiązania naszego problemu możemy użyć funkcji \texttt{waterfall} z biblioteki \texttt{async}.
+Jak sama nazwa wskazuje, funkcja ta bierze ciąg
+asynchronicznych funkcji i wywołuje je w kolejności, przekazując wynik jednej do drugiej.
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{const} \{ waterfall \} = require(\EFs{"async"});
+\EFk{function} \EFf{loopWithWaterfall}(\EFv{m}) \{
+  \EFk{const} \EFv{tasks} = Array.from(\{ length: m \}, () => \EFk{async} () => task123());
+  waterfall(tasks);
+\}
+
+loopWithWaterfall(\EFhn{4});
+\end{Verbatim}
+\end{Code}
+
+Wynik programu nie uległ zmianie:
+\begin{tcolorbox}
+\begin{Verbatim}
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+1
+task 1 done
+2
+task 2 done
+3
+task 3 done
+done
+\end{Verbatim}
+
+
+\end{tcolorbox}
+\subsection*{Wnioski}
+\label{sec:org96986cf}
+\begin{itemize}
+\item W obu funkcjach udało się uzyskać efekt sekwencyjnego wykonania.
+\item Dzięki wykorzystaniu funkcji zwracających \texttt{Promise} możemy budować sekwencje
+operacji w sposób czytelny i łatwy do zarządzania.
+\item Choć często sekwencje wywołań \texttt{then} są tworzone statycznie jedna po drugiej,
+to jak pokazuje funkcja \texttt{loop} można to robić w sposób dynamiczny, w celu np.
+wymuszenia kolejności pomiędzy zadaniami.
+\item Funkcja \texttt{waterfall} jest bardziej ograniczająca niż podejście przedstawione w funkcji
+\texttt{loop}, bo musimy na starcie podać tablicę naszych zadań do wykonania.
+\newpage
+\end{itemize}
+\section*{Zadanie 2}
+\label{sec:orgdc55603}
+Najpierw tworzymy funkcję która zlicza ilość linii w pliku, według podanego kodu w poleceniu:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{const} \EFv{SPLIT\_REGEX} = \EFs{/\char92{}r\char92{}n|[\char92{}n\char92{}r\char92{}u0085\char92{}u2028\char92{}u2029]/}g;
+
+\EFk{function} \EFf{countLinesInFile}(\EFv{path}) \{
+  \EFk{let} \EFv{count} = \EFhn{0};
+  \EFk{return} \EFk{new} \EFt{Promise}((resolve, reject) => \{
+    fs.createReadStream(path)
+      .on(\EFs{"data"}, \EFk{function} (\EFv{chunk}) \{
+        count += chunk.toString(\EFs{"utf8"}).split(SPLIT\_REGEX).length - \EFhn{1};
+      \})
+      .on(\EFs{"end"}, \EFk{function} () \{
+        console.log(path, count);
+        resolve(count);
+      \})
+      .on(\EFs{"error"}, \EFk{function} (\EFv{err}) \{
+        console.error(err);
+        reject(err);
+      \});
+  \});
+\}
+\end{Verbatim}
+\end{Code}
+
+Funkcja \texttt{countLinesInFile} zwraca obietnicę, która jest spełniona gdy zakończymy
+przetwarzanie pliku, a odrzucona gdy wystąpi błąd.
+\subsection*{Podejście synchroniczne}
+\label{sec:orgb47d467}
+W tym podejściu tworzymy sekwencję operacji w podobnym sposób jak w funkcji
+\texttt{loop}. Wartość \texttt{value} to obecna suma linii w plikach.
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{const} \EFv{walker} = walkdir(\EFs{"./PAM08"});
+\EFk{let} \EFv{promise} = \EFk{new} \EFt{Promise}((resolve, \_) => resolve(\EFhn{0}));
+walker.on(\EFs{"file"}, (path, stat) => \{
+  \EFk{if} (stat.isFile()) \{
+    promise = promise.then(
+      \EFk{async} (value) => value + (\EFk{await} countLinesInFile(path))
+    );
+  \}
+\});
+
+walker.on(\EFs{"end"}, () => \{
+  promise
+    .then((value) => \{
+      console.log(\EFs{"Total lines:"}, value);
+    \})
+    .\EFk{catch}((err) => \{
+      console.error(err);
+    \});
+\});
+\end{Verbatim}
+\end{Code}
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}C:\char92{}Users\char92{}piotr\char92{}Documents\char92{}tw-labjs\char92{}PAM08\char92{}WisconsinA\char92{}WisconsinA\_www.yahoo.co.jp.html \EFhn{25}
+C:\char92{}Users\char92{}piotr\char92{}Documents\char92{}tw-labjs\char92{}PAM08\char92{}WisconsinA\char92{}WisconsinA\_www.yahoo.com.html \EFhn{18}
+C:\char92{}Users\char92{}piotr\char92{}Documents\char92{}tw-labjs\char92{}PAM08\char92{}WisconsinA\char92{}WisconsinA\_www.youtube.com.html \EFhn{17}
+Total lines: \EFhn{61823}
+\end{Verbatim}
+\end{Code}
+
+Aby zmierzyć czas wykoania programu tworzymy funkcję \texttt{measure} i
+\texttt{calculateAverageTime}, w celu pomiaru czasu wykonania została zakomentowana linia.
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}console.log(path, count);
+\end{Verbatim}
+\end{Code}
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{function} \EFf{measure}() \{
+  \EFk{return} \EFk{new} \EFt{Promise}((resolve, reject) => \{
+    \EFk{const} \EFv{start} = performance.now();
+    \EFk{let} \EFv{promise} = \EFk{new} \EFt{Promise}((resolve, \_) => resolve(\EFhn{0}));
+    \EFk{const} \EFv{walker} = walkdir(\EFs{"./PAM08"});
+
+    walker.on(\EFs{"file"}, (path, stat) => \{
+      \EFk{if} (stat.isFile()) \{
+        promise = promise.then(
+          \EFk{async} (value) => value + (\EFk{await} countLinesInFile(path))
+        );
+      \}
+    \});
+
+    walker.on(\EFs{"end"}, () => \{
+      promise
+        .then((value) => \{
+          console.log(\EFs{"Total lines:"}, value);
+          \EFk{const} \EFv{end} = performance.now();
+          resolve(end - start);
+        \})
+        .\EFk{catch}((err) => \{
+          console.error(err);
+          reject(err);
+        \});
+    \});
+  \});
+\}
+
+\EFk{async} \EFk{function} calculateAverageTime() \{
+  \EFk{const} \EFv{N} = \EFhn{10};
+  \EFk{let} \EFv{sum} = \EFhn{0};
+  \EFk{for} (\EFk{let} \EFv{i} = \EFhn{0}; i < N; i++) \{
+    sum += \EFk{await} measure();
+  \}
+  console.log(\EFs{`Average time: \$\{sum / N\}ms`});
+\}
+
+calculateAverageTime();
+\end{Verbatim}
+\end{Code}
+
+Wynik:
+\begin{tcolorbox}
+\begin{Verbatim}
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Average time: 369.36642ms
+\end{Verbatim}
+
+\end{tcolorbox}
+\subsection*{Podejście asynchroniczne}
+\label{sec:org571dc33}
+Większość kodu jest identyczna z podejściem synchronicznym.
+Kluczowe zmiany znajdują się w callbackach do \texttt{walker.on("file")}
+i \texttt{walker.on("end")}. W tym podejściu tworzymy tablicę
+obietnic/zadań, a następnie używając funkcji \texttt{Promise.all} czekamy, aż
+wszystkie się zakończą. Wtedy dostajemy tablice wartości
+zwróconych z naszych obietnic i je sumujemy.
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{const} \EFv{tasks} = [];
+\EFk{const} \EFv{walker} = walkdir(\EFs{"./PAM08"});
+walker.on(\EFs{"file"}, (path, stat) => \{
+  tasks.push(countLinesInFile(path));
+\});
+
+walker.on(\EFs{"end"}, () => \{
+  Promise.all(tasks)
+    .then((values) => \{
+      console.log(
+        \EFs{"Total lines:"},
+        values.reduce((a, b) => a + b, \EFhn{0})
+      );
+    \})
+    .\EFk{catch}((err) => \{
+      console.error(err);
+    \});
+\});
+\end{Verbatim}
+\end{Code}
+
+Wynik:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}...
+C:\char92{}Users\char92{}piotr\char92{}Documents\char92{}tw-labjs\char92{}PAM08\char92{}WashingtonDCC\char92{}WashingtonDCC\_www.wikipedia.org.html \EFhn{33}
+C:\char92{}Users\char92{}piotr\char92{}Documents\char92{}tw-labjs\char92{}PAM08\char92{}WashingtonDCC\char92{}WashingtonDCC\_www.yahoo.com.html \EFhn{57}
+C:\char92{}Users\char92{}piotr\char92{}Documents\char92{}tw-labjs\char92{}PAM08\char92{}WashingtonDCC\char92{}WashingtonDCC\_www.youtube.com.html \EFhn{37}
+Total lines: \EFhn{61823}
+\end{Verbatim}
+\end{Code}
+
+W identyczny sposób jak w podejściu synchroniczmym tworzymy funkcję \texttt{measure}. Funkcja
+\texttt{calculateAverageTime} pozostaje bez zmian.
+
+Wynik:
+\begin{tcolorbox}
+\begin{Verbatim}
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Total lines: 61823
+Average time: 144.57031ms
+\end{Verbatim}
+
+
+\end{tcolorbox}
+\subsection*{Wnioski}
+\label{sec:org61f3d43}
+\begin{itemize}
+\item Widzimy, że w celu rozwiązania naszego problemu użyto jednocześnie:
+\begin{itemize}
+\item mechanizmu obietnic
+\item \texttt{async} / \texttt{await}
+\item callbacki
+\end{itemize}
+
+Wszystkie te mechanizmy dobrze ze sobą współpracują, co jest szczególnie ważne
+gdy dana biblioteka wspiera tylko jeden z nich. \texttt{walkdir} wspiera jedynie
+callbacki, ale i tak mogliśmy łatwo stworzyć funkcję, która z niej korzysta
+i jednocześnie zwraca obietnicę. Choć takie ''mieszanie'' da się zrobić, to jednak
+tracimy na czytelności kodu, więc lepiej robić to tylko w ramach ostateczności.
+\item Wyniki obu podejść są identyczne.
+\item Wersja asynchroniczna jest wedle oczekiwań dużo szybsza od synchronicznej(ponad dwukrotnie).
+\item Programowanie asynchroniczne w języku JavaScript silnie różni się od
+programowania asynchroniczengo np. w Javie. W programowaniu asynchronicznym w
+JavaScript większy nacisk kładzie się na mechanizmy oparte na zdarzeniach oraz
+zarządzanie obietnicami. W Javie natomiast asynchroniczność często
+opiera się na wielowątkowości i zarządzaniu wątkami (np. przy użyciu
+\texttt{ExecutorService}).
+\end{itemize}
+\section*{Bibliografia}
+\label{sec:org8ef898c}
+\begin{itemize}
+\item \href{https://www.npmjs.com/package/walkdir}{Walkdir - npm package}
+\item \href{https://nodejs.org/api/fs.html}{Node.js File System (fs) API}
+\item \href{https://caolan.github.io/async/v3/docs.html}{Async.js Documentation}
+\end{itemize}
+\end{document}
