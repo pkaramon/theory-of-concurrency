@@ -1,0 +1,1116 @@
+% Created 2024-10-28 Mon 03:41
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\selectlanguage{polish}
+\usepackage{caption}
+\usepackage{booktabs}
+\captionsetup{labelfont=bf}
+\usepackage{float}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\author{Piotr Karamon}
+\date{28.10.2024r.}
+\title{Laboratorium 3 - Problem ograniczonego bufora}
+\hypersetup{
+ pdfauthor={Piotr Karamon},
+ pdftitle={Laboratorium 3 - Problem ograniczonego bufora},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.2 (Org mode 9.7.11)}, 
+ pdflang={Polish}}
+
+% Setup for code blocks [1/2]
+
+\usepackage{fvextra}
+
+\fvset{%
+  commandchars=\\\{\},
+  highlightcolor=white!95!black!80!blue,
+  breaklines=true,
+  breaksymbol=\color{white!60!black}\tiny\ensuremath{\hookrightarrow}}
+
+% Make line numbers smaller and grey.
+\renewcommand\theFancyVerbLine{\footnotesize\color{black!40!white}\arabic{FancyVerbLine}}
+
+\usepackage{xcolor}
+
+% In case engrave-faces-latex-gen-preamble has not been run.
+\providecolor{EfD}{HTML}{f7f7f7}
+\providecolor{EFD}{HTML}{28292e}
+
+% Define a Code environment to prettily wrap the fontified code.
+\usepackage[breakable,xparse]{tcolorbox}
+\DeclareTColorBox[]{Code}{o}%
+{colback=EfD!98!EFD, colframe=EfD!95!EFD,
+  fontupper=\footnotesize\setlength{\fboxsep}{0pt},
+  colupper=EFD,
+  IfNoValueTF={#1}%
+  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
+    boxrule=0.5pt, left=2pt}%
+  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
+    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
+  right=2pt, top=1pt, bottom=0.5pt,
+  breakable}
+
+% Support listings with captions
+\usepackage{float}
+\floatstyle{plain}
+\newfloat{listing}{htbp}{lst}
+\newcommand{\listingsname}{Listing}
+\floatname{listing}{\listingsname}
+\newcommand{\listoflistingsname}{List of Listings}
+\providecommand{\listoflistings}{\listof{listing}{\listoflistingsname}}
+
+
+% Setup for code blocks [2/2]: syntax highlighting colors
+
+\newcommand\efstrut{\vrule height 2.1ex depth 0.8ex width 0pt}
+\definecolor{EFD}{HTML}{000000}
+\definecolor{EfD}{HTML}{ffffff}
+\newcommand{\EFD}[1]{\textcolor{EFD}{#1}} % default
+\newcommand{\EFvp}[1]{#1} % variable-pitch
+\definecolor{EFh}{HTML}{595959}
+\newcommand{\EFh}[1]{\textcolor{EFh}{#1}} % shadow
+\definecolor{EFsc}{HTML}{005f5f}
+\newcommand{\EFsc}[1]{\textcolor{EFsc}{\textbf{#1}}} % success
+\definecolor{EFw}{HTML}{884900}
+\newcommand{\EFw}[1]{\textcolor{EFw}{\textbf{#1}}} % warning
+\definecolor{EFe}{HTML}{a60000}
+\newcommand{\EFe}[1]{\textcolor{EFe}{\textbf{#1}}} % error
+\definecolor{EFl}{HTML}{3548cf}
+\newcommand{\EFl}[1]{\textcolor{EFl}{#1}} % link
+\definecolor{EFlv}{HTML}{721045}
+\newcommand{\EFlv}[1]{\textcolor{EFlv}{#1}} % link-visited
+\definecolor{Efhi}{HTML}{b2e4dc}
+\newcommand{\EFhi}[1]{\colorbox{Efhi}{\efstrut{}#1}} % highlight
+\definecolor{EFc}{HTML}{595959}
+\newcommand{\EFc}[1]{\textcolor{EFc}{\textit{#1}}} % font-lock-comment-face
+\definecolor{EFcd}{HTML}{595959}
+\newcommand{\EFcd}[1]{\textcolor{EFcd}{\textit{#1}}} % font-lock-comment-delimiter-face
+\definecolor{EFs}{HTML}{3548cf}
+\newcommand{\EFs}[1]{\textcolor{EFs}{#1}} % font-lock-string-face
+\definecolor{EFd}{HTML}{2a5045}
+\newcommand{\EFd}[1]{\textcolor{EFd}{\textit{#1}}} % font-lock-doc-face
+\definecolor{EFm}{HTML}{7c318f}
+\newcommand{\EFm}[1]{\textcolor{EFm}{\textit{#1}}} % font-lock-doc-markup-face
+\definecolor{EFk}{HTML}{531ab6}
+\newcommand{\EFk}[1]{\textcolor{EFk}{#1}} % font-lock-keyword-face
+\definecolor{EFb}{HTML}{8f0075}
+\newcommand{\EFb}[1]{\textcolor{EFb}{#1}} % font-lock-builtin-face
+\definecolor{EFf}{HTML}{721045}
+\newcommand{\EFf}[1]{\textcolor{EFf}{#1}} % font-lock-function-name-face
+\definecolor{EFv}{HTML}{005e8b}
+\newcommand{\EFv}[1]{\textcolor{EFv}{#1}} % font-lock-variable-name-face
+\definecolor{EFt}{HTML}{005f5f}
+\newcommand{\EFt}[1]{\textcolor{EFt}{#1}} % font-lock-type-face
+\definecolor{EFo}{HTML}{0000b0}
+\newcommand{\EFo}[1]{\textcolor{EFo}{#1}} % font-lock-constant-face
+\definecolor{EFwr}{HTML}{884900}
+\newcommand{\EFwr}[1]{\textcolor{EFwr}{#1}} % font-lock-warning-face
+\definecolor{EFnc}{HTML}{a60000}
+\newcommand{\EFnc}[1]{\textcolor{EFnc}{\textbf{#1}}} % font-lock-negation-char-face
+\definecolor{EFpp}{HTML}{a0132f}
+\newcommand{\EFpp}[1]{\textcolor{EFpp}{#1}} % font-lock-preprocessor-face
+\definecolor{EFrc}{HTML}{00663f}
+\newcommand{\EFrc}[1]{\textcolor{EFrc}{#1}} % font-lock-regexp-grouping-construct
+\definecolor{EFrb}{HTML}{721045}
+\newcommand{\EFrb}[1]{\textcolor{EFrb}{#1}} % font-lock-regexp-grouping-backslash
+\definecolor{Efob}{HTML}{f2f2f2}
+\newcommand{\EFob}[1]{\colorbox{Efob}{\efstrut{}#1}} % org-block
+\definecolor{EFobb}{HTML}{595959}
+\definecolor{Efobb}{HTML}{f2f2f2}
+\newcommand{\EFobb}[1]{\colorbox{Efobb}{\efstrut{}\textcolor{EFobb}{#1}}} % org-block-begin-line
+\definecolor{EFobe}{HTML}{595959}
+\definecolor{Efobe}{HTML}{f2f2f2}
+\newcommand{\EFobe}[1]{\colorbox{Efobe}{\efstrut{}\textcolor{EFobe}{#1}}} % org-block-end-line
+\newcommand{\EFOa}[1]{\textbf{#1}} % outline-1
+\definecolor{EFOb}{HTML}{624416}
+\newcommand{\EFOb}[1]{\textcolor{EFOb}{\textbf{#1}}} % outline-2
+\definecolor{EFOc}{HTML}{193668}
+\newcommand{\EFOc}[1]{\textcolor{EFOc}{\textbf{#1}}} % outline-3
+\definecolor{EFOd}{HTML}{721045}
+\newcommand{\EFOd}[1]{\textcolor{EFOd}{\textbf{#1}}} % outline-4
+\definecolor{EFOe}{HTML}{2a5045}
+\newcommand{\EFOe}[1]{\textcolor{EFOe}{\textbf{#1}}} % outline-5
+\definecolor{EFOf}{HTML}{7f0000}
+\newcommand{\EFOf}[1]{\textcolor{EFOf}{\textbf{#1}}} % outline-6
+\definecolor{EFOg}{HTML}{3f578f}
+\newcommand{\EFOg}[1]{\textcolor{EFOg}{\textbf{#1}}} % outline-7
+\definecolor{EFOh}{HTML}{595959}
+\newcommand{\EFOh}[1]{\textcolor{EFOh}{\textbf{#1}}} % outline-8
+\definecolor{EFhn}{HTML}{0000b0}
+\newcommand{\EFhn}[1]{\textcolor{EFhn}{#1}} % highlight-numbers-number
+\newcommand{\EFhq}[1]{#1} % highlight-quoted-quote
+\newcommand{\EFhs}[1]{#1} % highlight-quoted-symbol
+\newcommand{\EFrda}[1]{#1} % rainbow-delimiters-depth-1-face
+\definecolor{EFrdb}{HTML}{dd22dd}
+\newcommand{\EFrdb}[1]{\textcolor{EFrdb}{#1}} % rainbow-delimiters-depth-2-face
+\definecolor{EFrdc}{HTML}{008899}
+\newcommand{\EFrdc}[1]{\textcolor{EFrdc}{#1}} % rainbow-delimiters-depth-3-face
+\definecolor{EFrdd}{HTML}{972500}
+\newcommand{\EFrdd}[1]{\textcolor{EFrdd}{#1}} % rainbow-delimiters-depth-4-face
+\definecolor{EFrde}{HTML}{808000}
+\newcommand{\EFrde}[1]{\textcolor{EFrde}{#1}} % rainbow-delimiters-depth-5-face
+\definecolor{EFrdf}{HTML}{531ab6}
+\newcommand{\EFrdf}[1]{\textcolor{EFrdf}{#1}} % rainbow-delimiters-depth-6-face
+\definecolor{EFrdg}{HTML}{008900}
+\newcommand{\EFrdg}[1]{\textcolor{EFrdg}{#1}} % rainbow-delimiters-depth-7-face
+\definecolor{EFrdh}{HTML}{3548cf}
+\newcommand{\EFrdh}[1]{\textcolor{EFrdh}{#1}} % rainbow-delimiters-depth-8-face
+\definecolor{EFrdi}{HTML}{8f0075}
+\newcommand{\EFrdi}[1]{\textcolor{EFrdi}{#1}} % rainbow-delimiters-depth-9-face
+\definecolor{EFany}{HTML}{6f5500}
+\definecolor{Efany}{HTML}{6f5500}
+\newcommand{\EFany}[1]{\colorbox{Efany}{\efstrut{}\textcolor{EFany}{#1}}} % ansi-color-yellow
+\definecolor{EFanr}{HTML}{a60000}
+\definecolor{Efanr}{HTML}{a60000}
+\newcommand{\EFanr}[1]{\colorbox{Efanr}{\efstrut{}\textcolor{EFanr}{#1}}} % ansi-color-red
+\definecolor{EFanb}{HTML}{000000}
+\definecolor{Efanb}{HTML}{000000}
+\newcommand{\EFanb}[1]{\colorbox{Efanb}{\efstrut{}\textcolor{EFanb}{#1}}} % ansi-color-black
+\definecolor{EFang}{HTML}{006800}
+\definecolor{Efang}{HTML}{006800}
+\newcommand{\EFang}[1]{\colorbox{Efang}{\efstrut{}\textcolor{EFang}{#1}}} % ansi-color-green
+\definecolor{EFanB}{HTML}{0031a9}
+\definecolor{EfanB}{HTML}{0031a9}
+\newcommand{\EFanB}[1]{\colorbox{EfanB}{\efstrut{}\textcolor{EFanB}{#1}}} % ansi-color-blue
+\definecolor{EFanc}{HTML}{005e8b}
+\definecolor{Efanc}{HTML}{005e8b}
+\newcommand{\EFanc}[1]{\colorbox{Efanc}{\efstrut{}\textcolor{EFanc}{#1}}} % ansi-color-cyan
+\definecolor{EFanw}{HTML}{a6a6a6}
+\definecolor{Efanw}{HTML}{a6a6a6}
+\newcommand{\EFanw}[1]{\colorbox{Efanw}{\efstrut{}\textcolor{EFanw}{#1}}} % ansi-color-white
+\definecolor{EFanm}{HTML}{721045}
+\definecolor{Efanm}{HTML}{721045}
+\newcommand{\EFanm}[1]{\colorbox{Efanm}{\efstrut{}\textcolor{EFanm}{#1}}} % ansi-color-magenta
+\definecolor{EFANy}{HTML}{884900}
+\definecolor{EfANy}{HTML}{884900}
+\newcommand{\EFANy}[1]{\colorbox{EfANy}{\efstrut{}\textcolor{EFANy}{#1}}} % ansi-color-bright-yellow
+\definecolor{EFANr}{HTML}{972500}
+\definecolor{EfANr}{HTML}{972500}
+\newcommand{\EFANr}[1]{\colorbox{EfANr}{\efstrut{}\textcolor{EFANr}{#1}}} % ansi-color-bright-red
+\definecolor{EFANb}{HTML}{595959}
+\definecolor{EfANb}{HTML}{595959}
+\newcommand{\EFANb}[1]{\colorbox{EfANb}{\efstrut{}\textcolor{EFANb}{#1}}} % ansi-color-bright-black
+\definecolor{EFANg}{HTML}{00663f}
+\definecolor{EfANg}{HTML}{00663f}
+\newcommand{\EFANg}[1]{\colorbox{EfANg}{\efstrut{}\textcolor{EFANg}{#1}}} % ansi-color-bright-green
+\definecolor{EFANB}{HTML}{3548cf}
+\definecolor{EfANB}{HTML}{3548cf}
+\newcommand{\EFANB}[1]{\colorbox{EfANB}{\efstrut{}\textcolor{EFANB}{#1}}} % ansi-color-bright-blue
+\definecolor{EFANc}{HTML}{005f5f}
+\definecolor{EfANc}{HTML}{005f5f}
+\newcommand{\EFANc}[1]{\colorbox{EfANc}{\efstrut{}\textcolor{EFANc}{#1}}} % ansi-color-bright-cyan
+\definecolor{EFANw}{HTML}{ffffff}
+\definecolor{EfANw}{HTML}{ffffff}
+\newcommand{\EFANw}[1]{\colorbox{EfANw}{\efstrut{}\textcolor{EFANw}{#1}}} % ansi-color-bright-white
+\definecolor{EFANm}{HTML}{531ab6}
+\definecolor{EfANm}{HTML}{531ab6}
+\newcommand{\EFANm}[1]{\colorbox{EfANm}{\efstrut{}\textcolor{EFANm}{#1}}} % ansi-color-bright-magenta
+\begin{document}
+
+\maketitle
+\section*{Treści zadań}
+\label{sec:org3d0abb9}
+\subsection*{Zadanie 1}
+\label{sec:org9805b07}
+Problem ograniczonego bufora (producentów-konsumentów). Dany jest bufor, do
+którego producent może wkładać dane, a konsument pobierać. Napisać program,
+który zorganizuje takie działanie producenta i konsumenta, w którym zapewniona
+będzie własność bezpieczeństwa i żywotności.
+
+Zrealizować program:
+
+\begin{enumerate}
+\item przy pomocy metod \texttt{wait()/notify()}. Kod szkieletu
+\begin{enumerate}
+\item dla przypadku 1 producent/1 konsument
+\item dla przypadku \(n_1\) producentów/n2 konsumentów (\(n_1>n_2\), \(n_1=n_2\), \(n_1<n_2\))
+\item wprowadzić wywołanie metody \texttt{sleep()} i wykonać pomiary, obserwując zachowanie producentów/konsumentów
+\end{enumerate}
+\item przy pomocy operacji \texttt{P()/V()} dla semafora:
+\begin{enumerate}
+\item \(n_1=n_2=1\)
+\item \(n_1>1\), \(n_2>1\)
+\end{enumerate}
+\end{enumerate}
+\subsection*{Zadanie 2}
+\label{sec:org2964ec8}
+Przetwarzanie potokowe z buforem
+\begin{itemize}
+\item Bufor o rozmiarze N - wspólny dla wszystkich procesów!
+\item Proces A będący producentem.
+\item Proces Z będący konsumentem.
+\item Procesy B, C, \ldots{}, Y będące procesami przetwarzającymi. Kaidy proces otrzymuje dana wejściowa od procesu poprzedniego, jego wyjście zaś jest konsumowane przez proces następny.
+\item Procesy przetwarzają dane w miejscu, po czym przechodzą do kolejnej komórki bufora i znowu przetwarzają ja w miejscu.
+\item Procesy działają z rożnymi prędkościami.
+\end{itemize}
+Uwaga:
+
+\begin{enumerate}
+\item W implementacji nie jest dozwolone korzystanie/implementowanie własnych
+kolejek FIFO, należy używać tylko mechanizmu monitorów lub semaforów !
+\item Zaimplementować rozwiązanie przetwarzania potokowego (Przykładowe założenia:
+bufor rozmiaru 100, 1 producent, 1 konsument, 5 uszeregowanych procesów
+przetwarzających.) Od czego zależy prędkość obróbki w tym systemie ?
+Rozwiązanie za pomocą semaforów lub monitorów (dowolnie). Zrobić sprawozdanie
+z przetwarzania potokowego.
+\end{enumerate}
+\section*{Zadanie 1}
+\label{sec:org3463791}
+\subsection*{Rozwiązanie przy użyciu \texttt{wait} i \texttt{notify}}
+\label{sec:orgd6cce55}
+Rozwiązanie wykorzystuje mechanizm monitorów do synchronizacji producentów i
+konsumentów, współdzielących ograniczony bufor. W metodzie \texttt{put} producent dodaje
+element, ale czeka (\texttt{wait()}), gdy bufor jest pełny. Metoda \texttt{get} pozwala
+konsumentowi pobrać element, czekając, gdy bufor jest pusty. Po każdej operacji
+\texttt{put} lub \texttt{get} wywołanie \texttt{notifyAll()} budzi inne wątki, zapewniając płynność
+działania producentów i konsumentów.
+
+Kod klasy \texttt{BufferUsingMonitor}
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{BufferUsingMonitor} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{int} \EFv{capacity};
+    \EFk{private} \EFk{final} \EFt{LinkedList}\EFrdb{<}\EFt{Integer}\EFrdb{>} \EFv{buffer} = \EFk{new} \EFt{LinkedList}\EFrdb{<}\EFrdb{>}\EFrdb{(}\EFrdb{)};
+
+    \EFk{public} BufferUsingMonitor\EFrdb{(}\EFt{int} \EFv{capacity}\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.capacity = capacity;
+    \EFrdb{\}}
+
+    \EFk{public} \EFk{synchronized} \EFt{void} \EFf{put}\EFrdb{(}\EFt{int} \EFv{i}\EFrdb{)} \EFrdb{\{}
+        \EFk{while} \EFrdc{(}buffer.size\EFrdd{(}\EFrdd{)} >= capacity\EFrdc{)} \EFrdc{\{}
+            \EFk{try} \EFrdd{\{}
+                wait\EFrda{(}\EFrda{)};
+            \EFrdd{\}} \EFk{catch} \EFrdd{(}InterruptedException e\EFrdd{)} \EFrdd{\{}
+                e.printStackTrace\EFrda{(}\EFrda{)};
+            \EFrdd{\}}
+        \EFrdc{\}}
+        buffer.add\EFrdc{(}i\EFrdc{)};
+        notifyAll\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+
+    \EFk{public} \EFk{synchronized} \EFt{int} \EFf{get}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{while} \EFrdc{(}buffer.isEmpty\EFrdd{(}\EFrdd{)}\EFrdc{)} \EFrdc{\{}
+            \EFk{try} \EFrdd{\{}
+                wait\EFrda{(}\EFrda{)};
+            \EFrdd{\}} \EFk{catch} \EFrdd{(}InterruptedException e\EFrdd{)} \EFrdd{\{}
+                e.printStackTrace\EFrda{(}\EFrda{)};
+            \EFrdd{\}}
+        \EFrdc{\}}
+        \EFt{int} \EFv{element} = buffer.removeFirst\EFrdc{(}\EFrdc{)};
+        notifyAll\EFrdc{(}\EFrdc{)};
+        \EFk{return} element;
+
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{int} \EFf{size}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{return} buffer.size\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Kod producenta oraz konsumenta jest bardzo prosty. Dostają oni bufor oraz
+liczbę iteracji które mają wykonać.
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{Producer} \EFk{extends} \EFt{Thread} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{BufferUsingSemaphores} \EFv{buffer};
+    \EFk{private} \EFk{final} \EFt{int} \EFv{numberOfIterations};
+
+    \EFk{public} Producer\EFrdb{(}\EFt{BufferUsingSemaphores} \EFv{buffer}, \EFt{int} \EFv{numberOfIterations}\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.buffer = buffer;
+        \EFk{this}.numberOfIterations = numberOfIterations;
+    \EFrdb{\}}
+
+
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{int} \EFv{i} = \EFhn{0}; i < \EFt{numberOfIterations}; ++i\EFrdc{)} \EFrdc{\{}
+            buffer.put\EFrdd{(}i\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+
+\EFk{class} \EFt{Consumer} \EFk{extends} \EFt{Thread} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{BufferUsingSemaphores} \EFv{buffer};
+    \EFk{private} \EFk{final} \EFt{int} \EFv{numberOfIterations};
+
+    \EFk{public} Consumer\EFrdb{(}\EFt{BufferUsingSemaphores} \EFv{buffer}, \EFt{int} \EFv{numberOfIterations}\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.buffer = buffer;
+        \EFk{this}.numberOfIterations = numberOfIterations;
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{int} \EFv{i} = \EFhn{0}; i < \EFt{numberOfIterations}; ++i\EFrdc{)} \EFrdc{\{}
+            System.out.println\EFrdd{(}buffer.get\EFrda{(}\EFrda{)}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+
+W celu łatwego testowania rożnych wariantów wprowadzamy metodę \texttt{run()}, która
+przyjmuję liczbę producentów oraz konsumentów i wykonuje eksperyment.
+Pojemność bufora jest stała i wynosi 10.
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{public} \EFk{static} \EFt{void} \EFf{run}\EFrda{(}\EFt{int} \EFv{producers}, \EFt{int} \EFv{consumers}\EFrda{)} \EFrda{\{}
+    \EFt{int} \EFv{products} = producers * \EFhn{20};
+    \EFt{int} \EFv{producersIterations} = products / producers;
+    \EFt{int} \EFv{consumersIterations} = products / consumers;
+
+    System.out.printf\EFrdb{(}
+        \EFs{"Producers = \%s, Consumers = \%s, Total Products = \%s \%n"}, producers, consumers, products\EFrdb{)};
+    System.out.printf\EFrdb{(}
+        \EFs{"One producers produces = \%s items, One consumer consumes = \%s items\%n"},
+         producersIterations, consumersIterations\EFrdb{)};
+
+
+    \EFt{BufferUsingMonitor} \EFv{buffer} = \EFk{new} \EFt{BufferUsingMonitor}\EFrdb{(}\EFhn{10}\EFrdb{)};
+    \EFt{List}\EFrdb{<}? \EFk{extends} \EFt{Thread}\EFrdb{>} \EFv{threads} = Stream.concat\EFrdb{(}
+        IntStream.range\EFrdc{(}\EFhn{0}, producers\EFrdc{)}.mapToObj\EFrdc{(}i -> \EFk{new} \EFt{Producer}\EFrdd{(}buffer, producersIterations\EFrdd{)}\EFrdc{)},
+        IntStream.range\EFrdc{(}\EFhn{0}, consumers\EFrdc{)}.mapToObj\EFrdc{(}i -> \EFk{new} \EFt{Consumer}\EFrdd{(}buffer, consumersIterations\EFrdd{)}\EFrdc{)}\EFrdb{)}
+       .toList\EFrdb{(}\EFrdb{)};
+
+    threads.forEach\EFrdb{(}Thread::start\EFrdb{)};
+    \EFk{try} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{Thread} \EFv{t} : threads\EFrdc{)} \EFrdc{\{}
+            t.join\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}} \EFk{catch} \EFrdb{(}InterruptedException e\EFrdb{)} \EFrdb{\{}
+        e.printStackTrace\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+
+    System.out.println\EFrdb{(}\EFs{"All done"}\EFrdb{)};
+    System.out.println\EFrdb{(}\EFs{"Buffer size: "} + buffer.size\EFrdc{(}\EFrdc{)}\EFrdb{)};
+    System.out.println\EFrdb{(}\EFrdb{)};
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+W metodzie \texttt{main} testujemy nasz program dla różnych ilości producentów i konsumentów.
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{public} \EFk{static} \EFt{void} \EFf{main}\EFrda{(}\EFt{String}\EFrdb{[}\EFrdb{]} \EFv{args}\EFrda{)} \EFrda{\{}
+    run\EFrdb{(}\EFhn{1}, \EFhn{1}\EFrdb{)};
+    run\EFrdb{(}\EFhn{5}, \EFhn{2}\EFrdb{)};
+    run\EFrdb{(}\EFhn{2}, \EFhn{5}\EFrdb{)};
+    run\EFrdb{(}\EFhn{5}, \EFhn{5}\EFrdb{)};
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Wynik działania programu:
+
+\begin{tcolorbox}
+\begin{Verbatim}
+Producers = 1, Consumers = 1, Total Products = 20
+One producers produces = 20 items, One consumer consumes = 20 items
+All done
+Buffer size: 0
+
+Producers = 5, Consumers = 2, Total Products = 100
+One producers produces = 20 items, One consumer consumes = 50 items
+All done
+Buffer size: 0
+
+Producers = 2, Consumers = 5, Total Products = 40
+One producers produces = 20 items, One consumer consumes = 8 items
+All done
+Buffer size: 0
+
+Producers = 5, Consumers = 5, Total Products = 100
+One producers produces = 20 items, One consumer consumes = 20 items
+All done
+Buffer size: 0
+\end{Verbatim}
+
+
+\end{tcolorbox}Wszystkie wątki poprawnie się zakończyły, nie nastąpiło zakleszczenie, ani
+wyścig, wszystkie elementy bufora zostały skonsumowane. Program zatem działa
+poprawnie.
+
+Dodajemy teraz wywołania metody \texttt{sleep()} oraz \texttt{println()} w celu obserwacji i pomiaru
+czasu działania programu.
+Wywołania \texttt{println()} są umieszczone w metodach bufora.
+Natomiast wywołania \texttt{sleep()} są umieszczone w każdej iteracji producenta i konsumenta.
+Wątki śpią po 20ms.
+
+Wynik wykonania zmodyfikowanego programu(z racji bardzo dużej ilości linii
+tylko
+pierwsze są pokazane w celu ukazania tendencji):
+
+\begin{tcolorbox}
+\begin{Verbatim}
+Producers = 1, Consumers = 1, Total Products = 20
+One producers produces = 20 items, One consumer consumes = 20 items
+Produced: 0
+Consumed: 0
+Produced: 1
+Consumed: 1
+Produced: 2
+Consumed: 2
+Produced: 3
+Consumed: 3
+Produced: 4
+Consumed: 4
+Produced: 5
+Consumed: 5
+Produced: 6
+Consumed: 6
+Produced: 7
+Consumed: 7
+Produced: 8
+Consumed: 8
+Produced: 9
+Consumed: 9
+Produced: 10
+Consumed: 10
+Produced: 11
+Consumed: 11
+Produced: 12
+Consumed: 12
+Produced: 13
+Consumed: 13
+Produced: 14
+Consumed: 14
+Produced: 15
+Consumed: 15
+Produced: 16
+Consumed: 16
+Produced: 17
+Consumed: 17
+Produced: 18
+Consumed: 18
+Produced: 19
+Consumed: 19
+All done
+Buffer size: 0
+\end{Verbatim}
+
+
+\end{tcolorbox}\begin{tcolorbox}
+\begin{Verbatim}
+Producers = 5, Consumers = 2, Total Products = 100
+One producers produces = 20 items, One consumer consumes = 50 items
+Produced: 0
+Produced: 0
+Produced: 0
+Consumed: 0
+Produced: 0
+Consumed: 0
+Produced: 0
+Produced: 1
+Produced: 1
+Produced: 1
+Consumed: 0
+Produced: 1
+Consumed: 0
+Produced: 1
+Produced: 2
+Produced: 2
+Produced: 2
+Consumed: 0
+Produced: 2
+Consumed: 1
+Produced: 2
+Produced: 3
+Consumed: 1
+...
+All done
+Buffer size: 0
+\end{Verbatim}
+
+
+\end{tcolorbox}\begin{tcolorbox}
+\begin{Verbatim}
+Producers = 2, Consumers = 5, Total Products = 40
+One producers produces = 20 items, One consumer consumes = 8 items
+Produced: 0
+Consumed: 0
+Produced: 0
+Consumed: 0
+Produced: 1
+Consumed: 1
+Produced: 1
+Consumed: 1
+Produced: 2
+Consumed: 2
+Produced: 3
+Consumed: 3
+Produced: 2
+Consumed: 2
+Produced: 4
+Consumed: 4
+Produced: 3
+Consumed: 3
+Produced: 5
+Consumed: 5
+Produced: 4
+Consumed: 4
+Produced: 6
+...
+All done
+Buffer size: 0
+\end{Verbatim}
+
+
+\end{tcolorbox}\begin{tcolorbox}
+\begin{Verbatim}
+Producers = 5, Consumers = 5, Total Products = 100
+One producers produces = 20 items, One consumer consumes = 20 items
+Produced: 0
+Consumed: 0
+Produced: 0
+Consumed: 0
+Produced: 0
+Produced: 0
+Produced: 0
+Consumed: 0
+Consumed: 0
+Consumed: 0
+Produced: 1
+Consumed: 1
+Produced: 1
+Consumed: 1
+Produced: 1
+Consumed: 1
+Produced: 1
+Consumed: 1
+Produced: 1
+Consumed: 1
+Produced: 2
+Consumed: 2
+...
+All done
+Buffer size: 0
+\end{Verbatim}
+
+
+\end{tcolorbox}Jak widzimy program nadal działa poprawnie.
+Pomiędzy wykonaniem konsumentów oraz producentów
+następuje naturalny przeplot we wszystkich przypadkach.
+Konsumenci pobierają dane z bufora chwilę, po włożeniu ich
+przez producentów.
+
+
+W celu analizy czasowej naszego programu skorzystamy z funkcji \texttt{runTimed()}
+pobiera ona liczbę produktów do przetworzenia ,ilość producentów, konsumentów
+oraz czas opóźnienia, osobny dla producentów i konsumentów.
+\newpage
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{public} \EFk{static} \EFt{void} \EFf{runTimed}\EFrda{(}
+        \EFt{int} \EFv{products},
+        \EFt{int} \EFv{producers},
+        \EFt{int} \EFv{producersDelay},
+        \EFt{int} \EFv{consumers},
+        \EFt{int} \EFv{consumersDelay}\EFrda{)} \EFrda{\{}
+    \EFt{int} \EFv{producersIterations} = products / producers;
+    \EFt{int} \EFv{consumersIterations} = products / consumers;
+
+    System.out.println\EFrdb{(}\EFs{"Products = "} + products\EFrdb{)};
+    System.out.printf\EFrdb{(}\EFs{"Producers = \%s, Consumers = \%s, Total Products = \%s \%n"}, producers, consumers, products\EFrdb{)};
+    System.out.printf\EFrdb{(}\EFs{"One producers produces = \%s items, One consumer consumes = \%s item\%n"},
+            producersIterations, consumersIterations\EFrdb{)};
+
+    \EFt{BufferUsingMonitor} \EFv{buffer} = \EFk{new} \EFt{BufferUsingMonitor}\EFrdb{(}\EFhn{10}\EFrdb{)};
+    \EFt{List}\EFrdb{<}? \EFk{extends} \EFt{Thread}\EFrdb{>} \EFv{threads} = Stream.concat\EFrdb{(}
+                    IntStream
+                            .range\EFrdc{(}\EFhn{0}, producers\EFrdc{)}
+                            .mapToObj\EFrdc{(}i -> \EFk{new} \EFt{Producer}\EFrdd{(}producersDelay, buffer, producersIterations\EFrdd{)}\EFrdc{)},
+                    IntStream
+                            .range\EFrdc{(}\EFhn{0}, consumers\EFrdc{)}
+                            .mapToObj\EFrdc{(}i -> \EFk{new} \EFt{Consumer}\EFrdd{(}consumersDelay, buffer, consumersIterations\EFrdd{)}\EFrdc{)}\EFrdb{)}
+            .toList\EFrdb{(}\EFrdb{)};
+
+    \EFt{long} \EFv{startTime} = System.currentTimeMillis\EFrdb{(}\EFrdb{)};
+
+    threads.forEach\EFrdb{(}Thread::start\EFrdb{)};
+    \EFk{try} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{Thread} \EFv{t} : threads\EFrdc{)} \EFrdc{\{}
+            t.join\EFrdd{(}\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}} \EFk{catch} \EFrdb{(}InterruptedException e\EFrdb{)} \EFrdb{\{}
+        e.printStackTrace\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+
+    \EFt{long} \EFv{endTime} = System.currentTimeMillis\EFrdb{(}\EFrdb{)};
+    System.out.println\EFrdb{(}\EFs{"Time taken: "} + \EFrdc{(}endTime - startTime\EFrdc{)} + \EFs{"ms"}\EFrdb{)};
+    System.out.println\EFrdb{(}\EFrdb{)};
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Uruchamiamy funkcję dla następujących przypadków:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFt{int} \EFv{delay} = \EFhn{3};
+
+System.out.println\EFrda{(}\EFs{"Producer is as fast as consumer"}\EFrda{)};
+
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{1}, delay, \EFhn{1}, delay\EFrda{)};
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{5}, delay, \EFhn{2}, delay\EFrda{)};
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{2}, delay, \EFhn{5}, delay\EFrda{)};
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{5}, delay, \EFhn{5}, delay\EFrda{)};
+
+System.out.println\EFrda{(}\EFs{"Producer is 3x slower than consumer"}\EFrda{)};
+
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{1}, delay * \EFhn{3}, \EFhn{1}, delay\EFrda{)};
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{5}, delay * \EFhn{3}, \EFhn{2}, delay\EFrda{)};
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{2}, delay * \EFhn{3}, \EFhn{5}, delay\EFrda{)};
+runTimed\EFrda{(}\EFhn{1000}, \EFhn{5}, delay * \EFhn{3}, \EFhn{5}, delay\EFrda{)};
+\end{Verbatim}
+\end{Code}
+
+
+Wynik programu:
+\begin{tcolorbox}
+\begin{Verbatim}
+Producer is as fast as consumer
+Products = 1000
+Producers = 1, Consumers = 1, Total Products = 1000
+One producers produces = 1000 items, One consumer consumes = 1000 item
+Time taken: 3619ms
+
+Products = 1000
+Producers = 5, Consumers = 2, Total Products = 1000
+One producers produces = 200 items, One consumer consumes = 500 item
+Time taken: 1891ms
+
+Products = 1000
+Producers = 2, Consumers = 5, Total Products = 1000
+One producers produces = 500 items, One consumer consumes = 200 item
+Time taken: 1859ms
+
+Products = 1000
+Producers = 5, Consumers = 5, Total Products = 1000
+One producers produces = 200 items, One consumer consumes = 200 item
+Time taken: 801ms
+\end{Verbatim}
+
+
+\end{tcolorbox}\begin{tcolorbox}
+\begin{Verbatim}
+Producer is 3x slower than consumer
+Products = 1000
+Producers = 1, Consumers = 1, Total Products = 1000
+One producers produces = 1000 items, One consumer consumes = 1000 item
+Time taken: 9646ms
+
+Products = 1000
+Producers = 5, Consumers = 2, Total Products = 1000
+One producers produces = 200 items, One consumer consumes = 500 item
+Time taken: 1957ms
+
+Products = 1000
+Producers = 2, Consumers = 5, Total Products = 1000
+One producers produces = 500 items, One consumer consumes = 200 item
+Time taken: 4813ms
+
+Products = 1000
+Producers = 5, Consumers = 5, Total Products = 1000
+One producers produces = 200 items, One consumer consumes = 200 item
+Time taken: 1927ms
+\end{Verbatim}
+
+
+\end{tcolorbox}W przypadku gdy producent oraz konsument pracują jednym tempem widzimy:
+\begin{itemize}
+\item 1 producent oraz 1 konsument potrzebują 3619ms by przetworzyć dane
+\item 2 producentów oraz 5 konsumentów potrzebują 1859ms by przetworzyć dane,
+jest to bardzo bliskie \(\frac{3619}{2}\), pomimo tego że mamy do dyspozycji aż 7 wątków,
+to przyśpieszenie jest zaledwie podwójne.
+\item W przypadku 5 producentów oraz 2 konsumentów mamy prawie identyczne wyniki jak
+wyżej.
+\item Przyśpieszenie bliskie 5x uzyskujemy dopiero w przypadku 5 producentów oraz 5 konsumentów.
+\item Oznacza to, że ilość producentów oraz konsumentów powinna być starannie dobrana, bo w
+przeciwnym wypadku, niektóre wątki stają się tak naprawdę nadmiarowe.
+Zamiast 5 producentów i 2 konsumentów moglibyśmy użyć 2 producentów w celu uzyskania
+tej samej prędkości.
+\end{itemize}
+
+W przypadku gdy producent jest 3x wolniejszy niż konsument:
+\begin{itemize}
+\item W poprzednim przypadku czas dla  przypadków 5/2 i 2/5 był identyczny.
+W tym natomiast widać bardzo znaczną różnicę. Czas produkcji jest o wiele wyższy od
+czasu konsumpcji, co oznacza, że potrzebujemy więcej producentów w celu
+zapewnienia szybkości systemu.
+\end{itemize}
+
+
+\textbf{Wnioski}:
+System z wykorzystaniem metod \texttt{wait()} i \texttt{notify()} skutecznie synchronizuje
+producentów i konsumentów, umożliwiając bezpieczny dostęp do bufora bez ryzyka
+zakleszczeń czy wyścigów. Mechanizm monitorów pozwala producentom i konsumentom
+czekać na odpowiednie warunki (np. dostępność miejsca lub danych w buforze), co
+gwarantuje, że wszystkie elementy zostaną prawidłowo przetworzone. Wyniki
+eksperymentów pokazały, że wydajność systemu zależy od odpowiedniego doboru
+liczby producentów i konsumentów – zbyt duża lub zbyt mała liczba wątków może
+prowadzić do nadmiarowości lub niedostatecznego wykorzystania zasobów, co wpływa
+na szybkość przetwarzania danych w systemie.
+\subsection*{Rozwiązanie przy użyciu semaforów}
+\label{sec:org4ec23ad}
+W celu synchronizacji używamy trzech semaforów. Semafor \texttt{mutex} zapewnia wyłączny
+dostęp do bufora, podczas gdy semafory zliczające \texttt{empty} i \texttt{full} kontrolują
+dostępne miejsca i liczbę elementów w buforze. Metoda \texttt{put(int i)} blokuje
+producenta, gdy bufor jest pełny, uzyskuje dostęp do bufora, dodaje element i
+zwiększa semafor \texttt{full}. Z kolei metoda \texttt{get()} czeka na dostępność elementów, usuwa
+je z bufora i zwiększa semafor \texttt{empty}.
+
+Rozwiązanie implementuje w klasie \texttt{BufforUsingSemaphores}
+
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{BufferUsingSemaphores} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{int} \EFv{capacity};
+    \EFk{private} \EFk{final} \EFt{LinkedList}\EFrdb{<}\EFt{Integer}\EFrdb{>} \EFv{buffer} = \EFk{new} \EFt{LinkedList}\EFrdb{<}\EFrdb{>}\EFrdb{(}\EFrdb{)};
+    \EFk{private} \EFk{final} \EFt{BinarySemaphore} \EFv{mutex} = \EFk{new} \EFt{BinarySemaphore}\EFrdb{(}\EFrdb{)};
+    \EFk{private} \EFk{final} \EFt{CountingSemaphore} \EFv{empty};
+    \EFk{private} \EFk{final} \EFt{CountingSemaphore} \EFv{full};
+
+    \EFk{public} BufferUsingSemaphores\EFrdb{(}\EFt{int} \EFv{capacity}\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.capacity = capacity;
+        empty = \EFk{new} \EFt{CountingSemaphore}\EFrdc{(}capacity\EFrdc{)};
+        full = \EFk{new} \EFt{CountingSemaphore}\EFrdc{(}\EFhn{0}\EFrdc{)};
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{put}\EFrdb{(}\EFt{int} \EFv{i}\EFrdb{)} \EFrdb{\{}
+        \EFo{empty}.P\EFrdc{(}\EFrdc{)};
+        \EFo{mutex}.P\EFrdc{(}\EFrdc{)};
+
+        buffer.add\EFrdc{(}i\EFrdc{)};
+
+        \EFo{mutex}.V\EFrdc{(}\EFrdc{)};
+        \EFo{full}.V\EFrdc{(}\EFrdc{)};
+
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{int} \EFf{get}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFo{full}.P\EFrdc{(}\EFrdc{)};
+        \EFo{mutex}.P\EFrdc{(}\EFrdc{)};
+
+        \EFt{int} \EFv{result} = buffer.removeFirst\EFrdc{(}\EFrdc{)};
+
+        \EFo{mutex}.V\EFrdc{(}\EFrdc{)};
+        \EFo{empty}.V\EFrdc{(}\EFrdc{)};
+        \EFk{return} result;
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{int} \EFf{size}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{return} buffer.size\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Zmieniamy klasy \texttt{Producer} i \texttt{Consumer} tak by korzystały właśnie z tego bufora.
+Testujemy nasz bufor dokładnie dla tych samych przypadków co poprzednio.
+
+Wynik:
+\begin{tcolorbox}
+\begin{Verbatim}
+Producers = 1, Consumers = 1, Total Products = 20
+One producers produces = 20 items, One consumer consumes = 20 item
+All done
+Buffer size: 0
+
+Producers = 5, Consumers = 2, Total Products = 100
+One producers produces = 20 items, One consumer consumes = 50 item
+All done
+Buffer size: 0
+
+Producers = 2, Consumers = 5, Total Products = 40
+One producers produces = 20 items, One consumer consumes = 8 item
+All done
+Buffer size: 0
+
+Producers = 5, Consumers = 5, Total Products = 100
+One producers produces = 20 items, One consumer consumes = 20 item
+All done
+Buffer size: 0
+\end{Verbatim}
+
+
+\end{tcolorbox}Jak widać zachowanie programu jest poprawne po wymianie implementacji bufora.
+
+\textbf{Wnioski}: Do synchronizacji producentów i
+konsumentów można użyć: metod  \texttt{wait()} i \texttt{notify()} oraz semaforów. Oba mechanizmy
+umożliwiają bezpieczny, zsynchronizowany dostęp do współdzielonego bufora,
+eliminując zakleszczenia i wyścigi.
+\section*{Zadanie 2}
+\label{sec:orgcc2a4ae}
+Przedstawiony problem jest rozwinięciem problemu producentów-konsumentów.
+Po szybkiej analizie problemu można dojść do następujących wniosków:
+
+\begin{itemize}
+\item Chcemy by producent mógł wpisywać dane do bufora, dopóki są w nim wolne
+miejsca. Producenta nie obchodzą wątki przetwarzające, jedynie interesuję
+go ile jest wolnych miejsc w buforze. Po wpisaniu do bufora powinien
+w jakiś sposób powiadomić wątki przetwarzające o nowym elemencie.
+\item Gdy producent wpiszę do bufora jeden element, to wtedy ciąg operacji
+dla niego jest jasno określony. Wątki przetwarzające będą po kolei
+przetwarzać element i zapisywać nową wartość w komórce.
+To oznacza, że wątki przetwarzające nie powinny wymagać
+posiadania mutexa na cały bufor, bo byłoby to po prostu mało efektywne.
+Zamiast tego powinny przekazywać sobie możliwość modyfikacji elementu.
+\item Wątek przetwarzający po transformacji jednego elementu nie powinien czekać
+na całkowite przetworzenie tego elementu, powinien on móc przejść do elementu
+następnego.
+\end{itemize}
+
+Idea rozwiązania:
+\begin{itemize}
+\item \texttt{empty} jest semaforem licznikowym i zlicza on ilość wolnych miejsc,
+jest opuszczany przez producenta, a podnoszony przez konsumenta
+\item \texttt{mutex} jest semaforem binarnym, który jest używany przez producenta
+oraz konsumenta by nie nastąpił wyścig przy zmienianiu rozmiaru bufora
+(zmiana znaczników \texttt{head} i \texttt{tail}).
+\item \texttt{transformersIndexes} przechowuje informacje o tym który element
+powinien zostać przetworzony przez odpowiadający wątek przetwarzający.
+\item Każdy wątek przetwarzający oraz konsument mają odpowiadający semafor licznikowy.
+Semafory początkowo mają wartość zero.
+Producent gdy dodaje element podnosi semafor pierwszego wątku przetwarzającego.
+To pozwala wątkowi przetwarzającemu na dokonanie transformacji na jednym elemencie.
+Gdy tego dokona podnoszony jest semafor kolejnego wątku w potoku.
+\item Na końcu potoku dane zbiera konsument, podnosząc semafor \texttt{empty} informuje producenta
+o zwolnionym miejscu. Konsument w przedstawionym rozwiązaniu
+tworzy listę zebranych elementów weryfikacji wyniku.
+\end{itemize}
+
+Kod bufora:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{Buffer} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{int} \EFv{capacity};
+    \EFk{private} \EFk{final} \EFt{BinarySemaphore} \EFv{mutex};
+    \EFk{private} \EFk{final} \EFt{CountingSemaphore} \EFv{empty};
+    \EFk{private} \EFk{final} \EFt{List}\EFrdb{<}\EFt{CountingSemaphore}\EFrdb{>} \EFv{transformers};
+    \EFk{private} \EFk{final} \EFt{int}\EFrdb{[}\EFrdb{]} \EFv{transformersIndexes};
+
+    \EFk{private} \EFk{final} \EFt{int}\EFrdb{[}\EFrdb{]} \EFv{buffer};
+    \EFk{private} \EFt{int} \EFv{bufferHead} = \EFhn{0};
+    \EFk{private} \EFt{int} \EFv{bufferTail} = \EFhn{0};
+
+    \EFk{public} Buffer\EFrdb{(}\EFt{int} \EFv{capacity}, \EFt{int} \EFv{transformersCount}\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.capacity = capacity;
+        buffer = \EFk{new} \EFt{int}\EFrdc{[}capacity\EFrdc{]};
+        mutex = \EFk{new} \EFt{BinarySemaphore}\EFrdc{(}\EFrdc{)};
+        empty = \EFk{new} \EFt{CountingSemaphore}\EFrdc{(}capacity\EFrdc{)};
+        transformers = IntStream
+            .range\EFrdc{(}\EFhn{0}, transformersCount + \EFhn{1}\EFrdc{)}
+            .mapToObj\EFrdc{(}i -> \EFk{new} \EFt{CountingSemaphore}\EFrdd{(}\EFhn{0}\EFrdd{)}\EFrdc{)}
+            .toList\EFrdc{(}\EFrdc{)};
+        transformersIndexes = \EFk{new} \EFt{int}\EFrdc{[}transformersCount\EFrdc{]};
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{add}\EFrdb{(}\EFt{int} \EFv{x}\EFrdb{)} \EFrdb{\{}
+        \EFo{empty}.P\EFrdc{(}\EFrdc{)};
+        \EFo{mutex}.P\EFrdc{(}\EFrdc{)};
+
+        buffer\EFrdc{[}bufferHead\EFrdc{]} = x;
+        bufferHead = \EFrdc{(}bufferHead + \EFhn{1}\EFrdc{)} \% capacity;
+
+        \EFo{mutex}.V\EFrdc{(}\EFrdc{)};
+        transformers.getFirst\EFrdc{(}\EFrdc{)}.V\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{void} \EFf{transform}\EFrdb{(}\EFt{int} \EFv{transformerIndex}, \EFt{Function}\EFrdc{<}\EFt{Integer}, \EFt{Integer}\EFrdc{>} \EFv{transformation}\EFrdb{)} \EFrdb{\{}
+        transformers.get\EFrdc{(}transformerIndex\EFrdc{)}.P\EFrdc{(}\EFrdc{)};
+
+        \EFt{int} \EFv{elementIndex} = transformersIndexes\EFrdc{[}transformerIndex\EFrdc{]};
+        buffer\EFrdc{[}elementIndex\EFrdc{]} = transformation.apply\EFrdc{(}buffer\EFrdd{[}elementIndex\EFrdd{]}\EFrdc{)};
+        transformersIndexes\EFrdc{[}transformerIndex\EFrdc{]} = \EFrdc{(}elementIndex + \EFhn{1}\EFrdc{)} \% capacity;
+
+        transformers.get\EFrdc{(}transformerIndex + \EFhn{1}\EFrdc{)}.V\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+
+    \EFk{public} \EFt{int} \EFf{get}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        transformers.getLast\EFrdc{(}\EFrdc{)}.P\EFrdc{(}\EFrdc{)};
+        \EFo{mutex}.P\EFrdc{(}\EFrdc{)};
+
+        \EFt{int} \EFv{result} = buffer\EFrdc{[}bufferTail\EFrdc{]};
+        bufferTail = \EFrdc{(}bufferTail + \EFhn{1}\EFrdc{)} \% capacity;
+
+        \EFo{mutex}.V\EFrdc{(}\EFrdc{)};
+        \EFo{empty}.V\EFrdc{(}\EFrdc{)};
+        \EFk{return} result;
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Kod producenta:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{Producer} \EFk{implements} \EFt{Runnable} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{Buffer} \EFv{buffer};
+
+    \EFk{public} Producer\EFrdb{(}Buffer buffer\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.buffer = buffer;
+    \EFrdb{\}}
+
+    \textcolor[HTML]{0000b0}{@Override}
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{int} \EFv{i} = \EFhn{0}; i < \EFhn{500} i++\EFrdc{)} \EFrdc{\{}
+            \EFk{try} \EFrdd{\{}
+                Thread.sleep\EFrda{(}\EFhn{10}\EFrda{)};
+            \EFrdd{\}} \EFk{catch} \EFrdd{(}InterruptedException e\EFrdd{)} \EFrdd{\{}
+                e.printStackTrace\EFrda{(}\EFrda{)};
+            \EFrdd{\}}
+            buffer.add\EFrdd{(}i\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Kod wątków przetwarzających:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{Transformer} \EFk{implements} \EFt{Runnable} \EFrda{\{}
+    \EFk{private} \EFk{final} \EFt{Buffer} \EFv{buffer};
+    \EFk{private} \EFk{final} \EFt{Function}\EFrdb{<}\EFt{Integer}, \EFt{Integer}\EFrdb{>} \EFv{transformation};
+    \EFk{private} \EFk{final} \EFt{int} \EFv{transformerIndex};
+    \EFk{private} \EFk{final} \EFt{int} \EFv{delayMs};
+
+    \EFk{public} Transformer\EFrdb{(}
+            \EFt{int} \EFv{transformerIndex},
+            \EFt{Buffer} \EFv{buffer},
+            Function<\EFt{Integer}, Integer> transformation,
+            \EFt{int} \EFv{delayMs}\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.buffer = buffer;
+        \EFk{this}.transformerIndex = transformerIndex;
+        \EFk{this}.transformation = transformation;
+        \EFk{this}.delayMs = delayMs;
+    \EFrdb{\}}
+
+    \textcolor[HTML]{0000b0}{@Override}
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{int} \EFv{i} = \EFhn{0}; i < \EFhn{500}; i++\EFrdc{)} \EFrdc{\{}
+            \EFk{try} \EFrdd{\{}
+                Thread.sleep\EFrda{(}delayMs\EFrda{)};
+            \EFrdd{\}} \EFk{catch} \EFrdd{(}InterruptedException e\EFrdd{)} \EFrdd{\{}
+                e.printStackTrace\EFrda{(}\EFrda{)};
+            \EFrdd{\}}
+            buffer.transform\EFrdd{(}transformerIndex, transformation\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Kod konsumenta:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFk{class} \EFt{Consumer} \EFk{implements} \EFt{Runnable} \EFrda{\{}
+    \EFk{public} \EFk{final} \EFt{List}\EFrdb{<}\EFt{Integer}\EFrdb{>} \EFv{results} = \EFk{new} \EFt{ArrayList}\EFrdb{<}\EFrdb{>}\EFrdb{(}\EFrdb{)};
+    \EFk{private} \EFk{final} \EFt{Buffer} \EFv{buffer};
+
+    \EFk{public} Consumer\EFrdb{(}Buffer buffer\EFrdb{)} \EFrdb{\{}
+        \EFk{this}.buffer = buffer;
+    \EFrdb{\}}
+
+    \textcolor[HTML]{0000b0}{@Override}
+    \EFk{public} \EFt{void} \EFf{run}\EFrdb{(}\EFrdb{)} \EFrdb{\{}
+        \EFk{for} \EFrdc{(}\EFt{int} \EFv{i} = \EFhn{0}; i < \EFhn{500}; i++\EFrdc{)} \EFrdc{\{}
+            \EFk{try} \EFrdd{\{}
+                Thread.sleep\EFrda{(}\EFhn{15}\EFrda{)};
+            \EFrdd{\}} \EFk{catch} \EFrdd{(}InterruptedException e\EFrdd{)} \EFrdd{\{}
+                e.printStackTrace\EFrda{(}\EFrda{)};
+            \EFrdd{\}}
+            \EFt{int} \EFv{result} = buffer.get\EFrdd{(}\EFrdd{)};
+            results.add\EFrdd{(}result\EFrdd{)};
+        \EFrdc{\}}
+    \EFrdb{\}}
+\EFrda{\}}
+\end{Verbatim}
+\end{Code}
+
+Kod testujący:
+\begin{Code}
+\begin{Verbatim}
+\color{EFD}\EFt{Buffer} \EFv{buffer} = \EFk{new} \EFt{Buffer}\EFrda{(}\EFhn{100}, \EFhn{5}\EFrda{)};
+
+\EFt{var} \EFv{producer} = \EFk{new} \EFt{Producer}\EFrda{(}buffer\EFrda{)};
+\EFt{var} \EFv{transformer1} = \EFk{new} \EFt{Transformer}\EFrda{(}\EFhn{0}, buffer, x -> x + \EFhn{1}, \EFhn{3}\EFrda{)};
+\EFt{var} \EFv{transformer2} = \EFk{new} \EFt{Transformer}\EFrda{(}\EFhn{1}, buffer, x -> x * \EFhn{2}, \EFhn{3}\EFrda{)};
+\EFt{var} \EFv{transformer3} = \EFk{new} \EFt{Transformer}\EFrda{(}\EFhn{2}, buffer, x -> x * \EFhn{3}, \EFhn{1}\EFrda{)};
+\EFt{var} \EFv{transformer4} = \EFk{new} \EFt{Transformer}\EFrda{(}\EFhn{3}, buffer, x -> x - \EFhn{100}, \EFhn{10}\EFrda{)};
+\EFt{var} \EFv{transformer5} = \EFk{new} \EFt{Transformer}\EFrda{(}\EFhn{4}, buffer, x -> x + 10\_000, \EFhn{5}\EFrda{)};
+\EFt{var} \EFv{consumer} = \EFk{new} \EFt{Consumer}\EFrda{(}buffer\EFrda{)};
+
+\EFt{List}\EFrda{<}\EFt{Integer}\EFrda{>} \EFv{expectedResults} = IntStream.range\EFrda{(}\EFhn{0}, \EFhn{500}\EFrda{)}.map\EFrda{(}
+        x -> \EFrdb{(}x + \EFhn{1}\EFrdb{)} * \EFhn{2} * \EFhn{3} - \EFhn{100} + 10\_000
+\EFrda{)}.boxed\EFrda{(}\EFrda{)}.toList\EFrda{(}\EFrda{)};
+
+\EFt{var} \EFv{threads} = Stream.of\EFrda{(}
+        producer,
+        transformer1,
+        transformer2,
+        transformer3,
+        transformer4,
+        transformer5,
+        consumer
+\EFrda{)}.map\EFrda{(}Thread::\EFk{new}\EFrda{)}.toList\EFrda{(}\EFrda{)};
+
+threads.forEach\EFrda{(}Thread::start\EFrda{)};
+\EFk{try} \EFrda{\{}
+    \EFk{for} \EFrdb{(}\EFt{Thread} \EFv{thread} : threads\EFrdb{)} \EFrdb{\{}
+        thread.join\EFrdc{(}\EFrdc{)};
+    \EFrdb{\}}
+\EFrda{\}} \EFk{catch} \EFrda{(}InterruptedException e\EFrda{)} \EFrda{\{}
+    e.printStackTrace\EFrdb{(}\EFrdb{)};
+\EFrda{\}}
+
+
+System.out.println\EFrda{(}\EFs{"All done"}\EFrda{)};
+System.out.println\EFrda{(}\EFs{"Results are equal: "} + consumer.results.equals\EFrdb{(}expectedResults\EFrdb{)}\EFrda{)};
+\end{Verbatim}
+\end{Code}
+
+Wynik:
+\begin{tcolorbox}
+\begin{Verbatim}
+All done
+Results are equal: true
+\end{Verbatim}
+
+
+\end{tcolorbox}Stworzone współbieżne rozwiązanie przetwarzania potokowego z buforem dało
+identyczny wynik co rozwiązanie sekwencyjne.
+
+Prędkość obróki w takim systemie zależy od najwolniejszego wątku w potoku.
+Jeden wątek w potoku może całkowicie zmienić prędkość naszego systemu,
+bo kolejne procesy muszą czekać na zakończenie jego prac. Wynika to z faktu, że
+operacje przetwarzające dla danego elementu muszą się wykonywać sekwencyjnie.
+
+\textbf{Wnioski}: Dzięki zastosowaniu semaforów, możliwe jest przetwarzanie potokowe z
+ograniczonym buforem. Stworzony program pozwala na łatwą zmianę struktury
+potoku(ilości wątków przetwarzających oraz ich funkcje). Szybkość takiego
+systemu jest mocno ograniczona z racji, tego że wiele operacji musi być
+wykonanych w bardzo określonej kolejności.
+\section*{Bibliografia}
+\label{sec:org1cc1d38}
+\begin{itemize}
+\item Bill Venners: \emph{Inside the Java Virtual Machine Chapter 20}
+\end{itemize}
+\end{document}
