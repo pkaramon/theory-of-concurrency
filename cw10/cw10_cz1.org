@@ -1,0 +1,188 @@
+#+title: Laboratorium 10 cz. 1 - Teoria śladów
+#+date: 07.01.2025.
+#+author: Piotr Karamon
+#+setupfile: ../setupfile.org
+#+latex_header: \usepackage{svg}
+#+latex_header: \usepackage[a4paper, total={6.5in, 10in}]{geometry}
+
+
+* Treści zadań
+** Zadanie 1
+Rozważmy zbiór zmiennych (''bazę danych'') $x$, $y$, $z$
+i następujący zbiór akcji (''transakcji'') modyfikujących wartości tych zmiennych:
+
++ (a) $x := x + y$
++ (b) $y := y + 2z$
++ (c) $x := 3x + z$
++ (d) $z := y - z$
+
+Akcje możemy wykonywać współbieżnie z następującym zastrzeżeniem: akcja zmieniająca wartość zmiennej nie może być wykonana współbieżnie z akcją odczytującą lub modyfikującą stan tej samej zmiennej. W języku teorii śladów: dwie akcje są zależne jeśli obie operują na tej samej zmiennej, a przynajmniej jedna z nich modyfikuje wartość tej zmiennej.
+
+*** Zadanie 1a
+W alfabecie $A = \{a, b, c, d\}$ określ relacje zależności i niezależności.
+
+*** Zadanie 1b
+Wyznacz ślad wyznaczony przez słowo $w = baadcb$ względem powyższej relacji niezależności.
+
+*** Zadanie 1c
+Wyznacz postać normalną Foaty śladu $[w]$, można skorzystać z algorytmu z pracy
+/Volker Diekert, Yves Metivier: Partial Commutation and Traces, str. 11./
+
+*** Zadanie 1d
+Narysuj graf zależności Diekerta (w postaci zminimalizowanej - bez krawędzi "przechodnich") dla słowa $w$.
+
+** Zadanie 2
+Dany jest zbiór akcji:
+
++ (a) $x \leftarrow y + z$
++ (b) $y \leftarrow x + w +y$
++ (c) $x \leftarrow x + y + v$
++ (d) $w \leftarrow v + z$
++ (e) $v \leftarrow x + v + w$
++ (f) $z \leftarrow y + z+ v$
+
+*** Zadanie 2a
+W alfabecie $A = \{ a, b, c, d, e, f \}$ określ relacje zależności i niezależności.
+
+*** Zadanie 2b
+Wyznacz postać normalną Foaty śladu $[u]$, gdzie $u = acdcfbbe$.
+
+*** Zadanie 2c
+Narysuj graf zależności Diekerta (w postaci zminimalizowanej - bez krawedzi "przechodnich") dla słowa $u$.
+
+* Zadanie 1
+Mamy następujące akcje
+
++ (a) $x := x + y$
++ (b) $y := y + 2z$
++ (c) $x := 3x + z$
++ (d) $z := y - z$
+
+Relacja zależność $D$, jest relacją symetryczną i refleksywną, zatem:
+        \begin{align*}
+        D &= \text{sym} \{ (a,b), (a,c), (b,d), (c,d) \} \cup I_A = \\
+        &= \{(a,a), (b,b), (c, c), (d,d), (a, b), (b, a), (a, c), (c,a), (b, d), (d, b), (c, d), (d, c)\}
+        \end{align*}
+
+Relacja niezależności to $I = A^2 - D$, zatem:
+
+        \begin{align*}
+        I = \{(a, d), (b, c), (c, b), (d, a) \}
+        \end{align*}
+
+Aby wyznaczyć ślad dla słowa $w = baadcb$ korzystamy ze zbioru $I$ i zamieniamy
+kolejność sąsiednich operacji, jeżeli są one niezależne.
+
+$$[baadcb]_I = \{baadcb, badacb, baadbc, bdaacb, badabc, baadbc   \}$$
+
+Aby wyznaczyć postać normalną Foaty dla śladu $[w]$ wykorzystujemy podany algorytm.
+
+$$[w] = (b)(ad)(a)(bc)$$
+
+Aby stworzyć graf Diekerta dla słowa $baadcb$ najpierw tworzymy graf, w którym krawędź występuje jeżeli dwie akcje są zależne, ale jest to krawędź skierowana.
+
+#+ATTR_LATEX: :placement [H]
+#+CAPTION: Graf Diekerta wraz z krawędziami przechodnimi dla słowa $w$.
+[[./graph1_1.png]]
+
+Następnie usuwamy krawędzie przechodnie, w rezultacie dostajemy graf:
+
+#+ATTR_LATEX: :placement [H]
+#+CAPTION: Graf Diekerta w postaci zminimalizowanej dla słowa $w$.
+[[./graph1_2.png]]
+
+Dla lepszej czytelności możemy trochę poprzemieszczać elementy grafu. Do wygenerowania grafu użyjemy PlantUML.
+
+#+begin_src plantuml :file graph1.png
+@startuml
+left to right direction
+skinparam dpi 200
+
+usecase "b" as b1
+usecase "a" as a1
+usecase "a" as a2
+usecase "d" as d
+usecase "c" as c
+usecase "b" as b2
+
+b1 --> a1
+b1 --> d
+a1 --> a2
+a1 --> b2
+d --> c
+d --> b2
+@enduml
+#+end_src
+
+#+ATTR_LATEX: :placement [H] :width 0.6\linewidth
+#+CAPTION: Graf Diekerta w postaci zminimalizowanej dla słowa $w$.
+#+RESULTS:
+[[file:graph1.png]]
+* Zadanie 2
+Dany jest zbior akcji:
++ (a) $x \leftarrow y + z$
++ (b) $y \leftarrow x + w +y$
++ (c) $x \leftarrow x + y + v$
++ (d) $w \leftarrow v + z$
++ (e) $v \leftarrow x + v + w$
++ (f) $z \leftarrow y + z+ v$
+
+Relacja zależności:
+
+$$ D = I_A \cup \text{sym}\{(a,b), (a, c), (a, e), (a,f), (b, c), (b, d), (b,f), (c,e), (d, e), (d, f), (e, f)\}$$
+
+Relacja niezależności:
+
+$$ I = \text{sym} \{(a, d), (b, e), (c, d), (c, f)  \}$$
+
+Postać normalna Foata śladu $[u]$, gdzie $u=acdcfbbe$.
+Wykorzystujemy podany algorytm i otrzymujemy:
+$$[u] = (ad)(cf)(c)(be)(b)$$
+
+
+#+ATTR_LATEX: :placement [H]
+#+CAPTION: Graf Diekerta wraz z krawędziami przechodnimi dla słowa $u$.
+[[./graph2_1.png]]
+
+
+#+ATTR_LATEX: :placement [H]
+#+CAPTION: Graf Diekerta w postaci zminimalizowanej dla słowa $u$.
+[[./graph2_2.png]]
+
+
+#+begin_src plantuml :file graph2.png
+
+@startuml
+skinparam dpi 200
+' Nodes
+usecase "a" as a
+usecase "c" as c1
+usecase "d" as d
+usecase "c" as c2
+usecase "f" as f
+usecase "b" as b1
+usecase "b" as b2
+usecase "e" as e
+
+' Straight connections
+a --> c1
+a --> f
+c1 --> c2
+d --> f
+c2 --> b1
+c2 --> e
+f --> b1
+f --> e
+b1 --> b2
+
+@enduml
+#+end_src
+
+#+ATTR_LATEX: :placement [H] :width 0.4\linewidth
+#+CAPTION: Graf Diekerta w postaci zminimalizowanej dla słowa $u$.
+#+RESULTS:
+[[file:graph2.png]]
+
+* Bibliografia
++ [[https://www.researchgate.net/publication/280851316_Partial_Commutation_and_Traces][Volker Diekert, Yves Metivier : Partial Commutation and Traces]]
++ [[https://plantuml.com/guide][PlantUML Language Reference]]
