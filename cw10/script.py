@@ -30,6 +30,7 @@ for a in reversed(w):
         if (a, b) not in I and b != a:
             stack.append('*')
 
+print(stacks)
 foata_normal = []
 while any([len(s) for s in stacks.values()]):
     tops = [s[-1] for s in stacks.values() if len(s) and s[-1] !='*' ]
