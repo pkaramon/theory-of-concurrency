@@ -1,0 +1,232 @@
+#+title: Laboratorium 11 - Sieci Petriego
+#+date: 20.01.2025.
+#+author: Piotr Karamon
+#+setupfile: ../setupfile.org
+#+latex_header: \usepackage{svg}
+#+latex_header: \usepackage[a4paper, total={6.5in, 9.5in}]{geometry}
+
+
+* Treść zadania
+** Ćwiczenie
+Prosty model maszyny stanów świateł ulicznych przedstawia sieć na rysunku poniżej:
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+[[file:cw1.png]]
+
+Stanami są miejsca sieci, zaś znacznik pokazuje w jakim stanie aktualnie się znajdujemy.
+
+- Narysować przykład w symulatorze.
+- Sprawdzić właściwości sieci (ograniczoność, bezpieczeństwo i możliwy deadlock) w symulatorze Pipe w menu ''State Space Analysis''.
+- Wygenerować graf osiągalności ''Reachability/Coverability Graph''. Zaobserwować:
+  - Jakie znakowania są osiągalne?
+  - Ile wynosi maksymalna liczba znaczników w każdym ze znakowań? Jakie możemy wyciągnąć z tego wnioski n.t. ograniczoności i bezpieczeństwa?
+  - Czy każde przejście jest przedstawione jako krawędź w grafie? Jaki z tego wniosek n.t. żywotności przejść?
+  - Czy wychodząc od dowolnego węzła grafu (znakowania) można wykonać dowolne przejście? Jaki z tego wniosek n.t. żywotności sieci? Czy są możliwe zakleszczenia?
+- Wykonać analizę niezmienników (wybrać w menu ''Invariant Analysis'').
+  - Wynik analizy niezmienników przejść (T-invariants) pokazuje nam, ile razy trzeba odpalić dane przejście (T), aby przekształcić znakowanie początkowe z powrotem do niego samego (wynik nie mówi nic o kolejności odpaleń). Z wyniku możemy m.in. wnioskować o odwracalności sieci.
+  - Wynik analizy niezmienników miejsc (P-invariants) pokazuje nam zbiory miejsc, w których łączna suma znaczników się nie zmienia. Pozwala to wnioskować n.t. zachowawczości sieci (czyli własności, gdzie suma znaczników pozostaje stała) oraz o ograniczoności miejsc.
+** Zadania
++ Zadanie 1 - wymyślić własną maszynę stanów, zasymulować przykład i dokonać analizy grafu osiągalności oraz niezmienników jak wyżej.
++ Zadanie 2 - zasymulować sieć jak poniżej.
+  #+ATTR_LATEX: :placement [H]
+  [[./cw2.png]]
++ Zadanie 3 - zasymulować wzajemne wykluczanie dwóch procesów na wspólnym zasobie. Dokonać analizy niezmienników. Wyjaśnij znaczenie równań (P-invariant equations). Które równanie pokazuje działanie ochrony sekcji krytycznej?
++ Zadanie 4 - uruchomić problem producenta i konsumenta z ograniczonym buforem (można posłużyć się przykładem, menu: file, examples). Dokonać analizy niezmienników. Czy sieć jest zachowawcza? Które równanie mówi nam o rozmiarze bufora?
++ Zadanie 5 - stworzyć symulację problemu producenta i konsumenta z nieograniczonym buforem. Dokonać analizy niezmienników. Zaobserwować brak pełnego pokrycia miejsc.
++ Zadanie 6 - zasymulować prosty przykład ilustrujący zakleszczenie. Wygenerować graf osiągalności i zaobserwować znakowania, z których nie można wykonać przejść. Zaobserwować właściwości sieci w ''State Space Analysis''. Poniżej przykład sieci z możliwością zakleszczenia (można wymyślić inny):
+
+  #+ATTR_LATEX: :placement [H]
+  [[./cw3.png]]
+
+
+
+* Rozwiązanie
+** Ćwiczenie
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Przykład narysowany w programie Pipe2.
+[[./cw-graph.png]]
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Wyniki po state space analysis.
+[[./cw-space-state.png]]
+
+Z wykonanej analizy możemy dowiedzieć się, że nasza sieć jest:
++ ograniczona, ponieważ liczba tokenów w naszej sieci zawsze jest stała i wynosi jeden.
++ bezpieczna, ponieważ każde miejsce w naszej sieci jest 1 - ograniczone.
++ wolna od zakleszczeń, czyli zawsze możemy odpalić jakąś tranzycję.
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Graf osiągalności.
+[[./cw-reach.png]]
+
+
+Z powstałego grafu osiągalności możemy wywnioskować, że:
++ wszystkie znakowania są osiągalne.
++ maksymalna liczba znaczników w każdym ze znakowań wynosi jeden.
+   Możemy zatem powiedzieć, że sieć jest bezpieczna i ograniczona.
++ każde z przejść przedstawione jest jako krawędź w grafie.
+   Każda tranzycja występuje zarazem w cyklu, zatem każda z nich jest żywa.
++ wychodząc od dowolnego znakowania można wykonać dowolne przejście, zatem
+    sieć jest żywa i zakleszczenia nie są możliwe.
+
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Analiza niezmienników miejsc i tranzycji.
+[[./cw-invariant.png]]
+
+Z powyższej analizy można powiedzieć, że:
++ sieć jest pokryta niezmiennikami zarówno tranzycji jak i miejsc.
++ wykonanie tranzycji T0, T1, T2 nie powoduje zmiany znakowania.
++ suma znaczników na miejscach P0, P1, P2 jest stała i wynosi 1.
++ sieć jest ograniczona i zachowacza
+** Zadanie 1
+Konstruując maszynę stanów musimy jedynie pamiętać, aby każda tranzycja miała jedno wejście i jedno wyjście.
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Maszyna stanów
+[[./zad1_draw.png]]
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Graf osiągalności.
+[[./zad1_reach.png]]
+
+Widzimy, że:
++ wszystkie znakowania są osiągalne.
++ maksymalna liczba znaczników w każdym ze znakowań wynosi jeden.
+   Możemy zatem powiedzieć, że sieć jest bezpieczna i ograniczona.
++ każde z przejść przedstawione jest jako krawędź w grafie.
++ każda tranzycja występuje zarazem w cyklu, zatem każda z nich jest żywa.
++ wychodząc od dowolnego znakowania można wykonać dowolne przejście, zatem
+   sieć jest żywa i zakleszczenia nie są możliwe.
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Analiza niezmienników.
+[[./zad1_invariant.png]]
+
+Widzimy, że:
++ sieć jest pokryta niezmiennikami zarówno tranzycji jak i miejsc.
++ wykonanie tranzycji T0, T1, T2, T3 oraz T0, T3, T4 nie powoduje zmiany znakowania.
++ suma znaczników na miejscach P0, P1, P2, P3 jest stała i wynosi 1.
++ sieć jest ograniczona i zachowawcza.
+** Zadanie 2
+Po narysowaniu robimy analizę grafu osiągalności i niezmienników.
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Analiza niezmienników.
+[[./zad2_invariant.png]]
+
+Widzimy, że nasza sieć nie jest pokryta niezmiennikami tranzycji, możemy
+zatem powiedzieć że nie jest odwracalna.
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Graf osiągalności.
+[[./zad2_reach.png]]
+
+Analizując graf osiągalności widzimy, że sieć jest żywa, ponieważ każda z
+tranzycji T0, T1, T2 jest potencjalnie wykonywalna dla dowolnego znakowania
+pochodnego od znakowania początkowego. Sieć jest żywa przez cykl S3, S4, S5.
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Właściwości S3.
+[[./zad2_omega.png]]
+
+Widzimy, że w P3 liczba znaczników rośnie do nieskończoności, zatem sieć nie jest ograniczona.
+** Zadanie 3
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Sieć Petriego reprezentująca dwa wykluczające się procesy. P1 oznacza wykonywanie procesu 1, P2 oznacza wykonywanie procesu 2, a P0 oznacza, że jakiś proces może zająć sekcję krytyczną.
+[[./zad3_draw.png]]
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Analiza niezmienników
+[[./zad3_invariant.png]]
+
+Widzimy, że:
++ sieć jest pokryta niezmiennikami zarówno tranzycji jak i miejsc.
++ sieć jest ograniczona.
++ Równanie $M(P0) + M(P1) + M(P2) = 1$, wskazuje że suma tokenów
+   w tych trzech miejscach jest stała i zawsze wynosi jeden. Innymi słowy
+   znacznik zawsze krąży między tymi trzema miejscami.
+   Co jest zgodne z mechanizmem wykluczania się procesów.
+** Zadanie 4
+Ładujemy przykład ''Producer & Consumer''.
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Problem producenta i konsumenta z ograniczonym buforem.
+[[./zad4_draw.png]]
+
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Analiza niezmienników.
+[[./zad4_invariant.png]]
+
+
+Widzimy, że:
++ sieć jest odwracalna, stwierdzamy to na podstawie wektora T niezmienników
++ sieć jest pokryta niezmiennikami miejsc jak i znaczników.
++ sieć jest ograniczona.
++ sieć jest zachowawcza, ponieważ suma znaczników na wszystkich miejscach jest zawsze równa 5.
++ równanie $M(P6) + M(P7) = 3$  mówi nam o rozmiarze bufora, jedno miejsce mówi o ilości
+    zajętych miejsc a drugie o ilości wolnych.
+** Zadanie 5
+
+Wzorując się na problemie z ograniczonym buforem, usuwamy ''kontrolę wolnych miejsc''.
+Teraz producent będzie mógł zawsze dodać nowy element.
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Problem producenta i konsumenta z nieograniczonym buforem.
+[[./zad5_draw.png]]
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Analiza niezmienników.
+[[./zad5_invariant.png]]
+
+Analiza jest bardzo podobna do problemu z ograniczonym buforem.  Jedyną różnica
+jest brak równania $M(P6) + M(P7) = 3$, które mówiło nam, że bufor jest
+ograniczony. Przez to sieć nasza nie jest w pełni pokryta niezmiennikami miejsc.
+
+
+
+** Zadanie 6
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Przykład przerysowany do programu Pipe2.
+[[./zad6_draw.png]]
+
+
+
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Graf osiągalności.
+[[./zad6_graph.png]]
+
+Zakleszczenie występuje w przypadku znakowań $S5 = \{0, 0, 1, 1, 0, 0\}$ oraz
+$S8 = \{0, 0, 0, 0, 1, 1\}$.
+
+#+ATTR_LATEX: :placement [H] :width 0.5\linewidth
+#+CAPTION: Wyniki po state space analysis.
+[[./zad6_state.png]]
+
+Jak widzimy nasza sieć chociaż jest ograniczona i bezpieczna to
+może w niej wystąpić zakleszczenie. Najkrótsza ścieżka do zakleszczenia to wykonanie
+tranzycji T0 i T3.
+
+
+* Wnioski
+Sieci Petriego są bardzo przydatne do modelowania i analizy systemów, które
+wymagają synchronizacji, współbieżności i zarządzania zasobami. Ich graficzna
+forma ułatwia zrozumienie działania systemu i identyfikację problemów, takich
+jak zakleszczenia czy brak żywotności. Są one formalnym narzędziem, co pozwala
+na dokładne analizy matematyczne.
+
+* Bibliografia
++ /Robert Schaefer : Teoria współbieżności/

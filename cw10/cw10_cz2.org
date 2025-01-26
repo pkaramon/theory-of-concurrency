@@ -18,7 +18,7 @@ Dane są:
 Napisz program w dowolnym języku, który:
 1. Wyznacza relację niezależności $I$
 2. Wyznacza ślad $[w]$ względem relacji I
-3. Wyznacza postać normal na Foaty $\text{FNF}([w])$ śladu $[w]$
+3. Wyznacza postać normalną na Foaty $\text{FNF}([w])$ śladu $[w]$
 4. Wyznacza graf zależności dla słowa $w$
 5. Wyznacza postać normalną Foaty na podstawie grafu
 

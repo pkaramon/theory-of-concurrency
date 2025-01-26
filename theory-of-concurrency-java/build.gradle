@@ -13,6 +13,8 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'net.sourceforge.plantuml:plantuml:1.2025.0'
+    implementation 'org.codehaus.jcsp:jcsp:1.1-rc5'
 }
 
 
